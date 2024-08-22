@@ -1,0 +1,22 @@
+{
+  "name": "sarrmal-web",
+  "version": "1.0.0",
+  "description": "sarrmal webapp informational website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/One-Bit-Myanmar/sarrmal-web.git"
+  },
+  "keywords": [
+    "sarrmal"
+  ],
+  "author": "One-Bit-Myanmar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/One-Bit-Myanmar/sarrmal-web/issues"
+  },
+  "homepage": "https://github.com/One-Bit-Myanmar/sarrmal-web#readme"
+}
