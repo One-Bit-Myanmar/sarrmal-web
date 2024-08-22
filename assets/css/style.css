@@ -13,6 +13,12 @@
     --snow: #fff;
 }
 
+
+/* universal selector  */
+*{
+    font-family: "Poppins", sans-serif;
+}
+
 /* background colors group  */
 .light-background { background-color: var(--light-background); } 
 .primary-background { background-color: var(--primary-color); }
