@@ -1,7 +1,7 @@
 <template>
   <div
     style="height: 100vh"
-    class="flex items-center justify-center bg-slate-100"
+    class="flex items-start justify-center bg-slate-100 p-5"
   >
     <!-- application header  -->
     <!-- <div class="header">

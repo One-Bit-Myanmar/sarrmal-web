@@ -1,77 +1,185 @@
 <template>
-  <div>
-    <h1>Register</h1>
-    <form @submit.prevent="handleSubmit">
+  <div class="p-6 bg-slate-50 rounded-lg shadow poppins-regular">
+    <h1 class="mb-8 text-xl poppins-semibold text-sky-700">Register</h1>
+    <form
+      @submit.prevent="handleSubmit"
+      class="flex flex-col items-start justify-center gap-6"
+      :class="{
+        'w-[350px]': !isSection2Visible,
+        'w-[600px]': isSection2Visible,
+      }"
+    >
       <!-- Section 1: Email and Password -->
-      <div v-if="!isSection2Visible" class="group-1">
-        <div>
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" required />
+      <div
+        v-if="!isSection2Visible"
+        class="flex flex-col items-start justify-center gap-6 w-full max-w-md mx-auto"
+      >
+        <div class="flex flex-col items-start justify-center gap-2 w-full">
+          <label for="email" class="text-lg font-regular">Email</label>
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            required
+            class="p-3 w-full shadow rounded-md"
+          />
         </div>
-        <div>
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" required />
+        <div class="flex flex-col items-start justify-center gap-2 w-full">
+          <label for="password" class="text-lg font-regular">Password</label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            required
+            class="p-3 w-full shadow rounded-md"
+          />
         </div>
-        <div>
-          <label for="confirm_password">Confirm Password:</label>
+        <div class="flex flex-col items-start justify-center gap-2 w-full">
+          <label for="confirm_password" class="text-lg font-regular"
+            >Confirm Password</label
+          >
           <input
             type="password"
             id="confirm_password"
             v-model="confirm_password"
             required
+            class="p-3 w-full shadow rounded-md"
           />
         </div>
+
+        <div class="flex items-center justify-between w-full gap-4">
+          <router-link to="/">
+            <div
+              class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"
+            >
+              Back
+            </div>
+          </router-link>
+          <button
+            v-if="!isSection2Visible"
+            :disabled="!isEmailAndPasswordValid"
+            @click="showSection2"
+            :class="{
+              'w-full px-8 py-4 rounded-lg font-semibold': true,
+              'bg-sky-400 text-slate-100': !isEmailAndPasswordValid,
+              'bg-sky-700 text-slate-100': isEmailAndPasswordValid,
+            }"
+          >
+            Next
+          </button>
+        </div>
       </div>
-      <button
-        v-if="!isSection2Visible"
-        :disabled="!isEmailAndPasswordValid"
-        @click="showSection2"
-      >
-        Next
-      </button>
 
       <!-- Section 2: Additional Information -->
-      <div v-if="isSection2Visible" class="group-2">
-        <div>
-          <label for="name">Username:</label>
-          <input type="text" id="name" v-model="name" required />
-        </div>
-        <div>
-          <label for="age">age:</label>
-          <input type="number" id="age" v-model="age" required />
-        </div>
-        <div>
-          <label for="gender">Gender:</label>
-          <select id="gender" v-model="gender" required>
-            <option value="1">Male</option>
-            <option value="0">Female</option>
-          </select>
-        </div>
-        <div style="display: flex">
-          <div>
-            <label for="weight">Weight (kg)</label>
-            <input type="number" id="weight" v-model="weight" required />
+      <div
+        v-if="isSection2Visible"
+        class="flex items-center justify-center p-4"
+      >
+        <div class="w-full max-w-4xl flex flex-col md:flex-row gap-6">
+          <!-- Left Side -->
+          <div class="flex flex-col gap-6 w-full md:w-1/2">
+            <div class="flex flex-col gap-2 w-full">
+              <label for="name" class="text-lg font-regular">Username:</label>
+              <input
+                type="text"
+                id="name"
+                v-model="name"
+                required
+                class="p-3 w-full border shadow rounded-md"
+              />
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+              <label for="age" class="text-lg font-regular">Age:</label>
+              <input
+                type="number"
+                id="age"
+                v-model="age"
+                required
+                class="p-3 w-full border shadow rounded-md"
+              />
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+              <label for="gender" class="text-lg font-regular">Gender:</label>
+              <select
+                id="gender"
+                v-model="gender"
+                required
+                class="p-3 w-full border shadow rounded-md"
+              >
+                <option value="1">Male</option>
+                <option value="0">Female</option>
+              </select>
+            </div>
+            <div class="flex flex-row gap-6 w-full">
+              <div class="flex flex-col gap-2 w-1/2">
+                <label for="weight" class="text-lg font-regular"
+                  >Weight (kg):</label
+                >
+                <input
+                  type="number"
+                  id="weight"
+                  v-model="weight"
+                  required
+                  class="p-3 w-full border shadow rounded-md"
+                />
+              </div>
+              <div class="flex flex-col gap-2 w-1/2">
+                <label for="height" class="text-lg font-regular"
+                  >Height (cm):</label
+                >
+                <input
+                  type="number"
+                  id="height"
+                  v-model="height"
+                  required
+                  class="p-3 w-full border shadow rounded-md"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <label for="height">Height (cm)</label>
-            <input type="number" id="height" v-model="height" required />
+
+          <!-- Right Side -->
+          <div class="flex flex-col gap-6 w-full md:w-1/2">
+            <div class="flex flex-col gap-2 w-full">
+              <label for="diseases" class="text-lg font-regular"
+                >Disease:</label
+              >
+              <input
+                type="text"
+                id="diseases"
+                v-model="diseases"
+                required
+                class="p-3 w-full border shadow rounded-md"
+              />
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+              <label for="allergies" class="text-lg font-regular"
+                >Allergies:</label
+              >
+              <input
+                type="text"
+                id="allergies"
+                v-model="allergies"
+                required
+                class="p-3 w-full border shadow rounded-md"
+              />
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+              <label for="exercise" class="text-lg font-regular"
+                >Exercise:</label
+              >
+              <select
+                id="exercise"
+                v-model="exercise"
+                required
+                class="p-3 w-full border shadow rounded-md"
+              >
+                <option value="low">Low</option>
+                <option value="moderate">Moderate</option>
+                <option value="high">High</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div>
-          <label for="diseases">Disease:</label>
-          <input type="text" id="diseases" v-model="diseases" required />
-        </div>
-        <div>
-          <label for="allergies">Allergies:</label>
-          <input type="text" id="allergies" v-model="allergies" required />
-        </div>
-        <div>
-          <label for="exercies">Exercise:</label>
-          <select id="exercise" v-model="exercise" required>
-            <option value="low">Low</option>
-            <option value="moderate">Moderate</option>
-            <option value="high">High</option>
-          </select>
         </div>
       </div>
 
@@ -79,7 +187,23 @@
       <div v-if="error" class="error">
         {{ error }}
       </div>
-      <button v-if="isSection2Visible" type="submit">Register</button>
+
+      <div class="flex items-center justify-between w-full gap-4 px-5">
+        <router-link to="/">
+          <div v-if="isSection2Visible"
+            class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"
+          >
+            Back
+          </div>
+        </router-link>
+        <button
+          v-if="isSection2Visible"
+          class="bg-sky-700 text-slate-100 w-full px-8 py-4 rounded-lg font-semibold"
+          type="submit"
+        >
+          Register
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -118,6 +242,7 @@ export default {
       );
     },
   },
+
   methods: {
     // Show the second section of the form
     showSection2() {
@@ -197,11 +322,23 @@ export default {
         this.error = error.message;
       }
     },
-    
   },
 };
 </script>
 
 <style scoped>
-/* Add some styles here */
+.outer-frame {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scrollable-form {
+  max-height: 90vh; /* Adjust as needed */
+  overflow-y: auto;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
 </style>

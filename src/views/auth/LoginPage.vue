@@ -1,20 +1,43 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <form @submit.prevent="login">
-      <div>
-        <label for="email">Email:</label>
-        <input type="text" id="email" v-model="email" required />
+  <div class="p-6 bg-slate-50 rounded-lg shadow poppins-regular">
+    <h1 class="mb-8 text-xl poppins-semibold text-sky-700">
+      <i class="bx bx-key" ></i> Login
+    </h1>
+    <form
+      @submit.prevent="login"
+      class="flex flex-col items-start justify-center gap-6"
+      style="width: 350px"
+    >
+      <div class="flex flex-col items-start justify-center gap-2 w-full">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="p-3 w-full shadow"
+          id="email"
+          v-model="email"
+          required
+        />
       </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required />
+      <div class="flex flex-col items-start justify-center gap-2 w-full">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          class="p-3 w-full shadow"
+          v-model="password"
+          required
+        />
       </div>
       <!-- Error message -->
       <div v-if="error" class="error">
         {{ error }}
       </div>
-      <button type="submit">Login</button>
+      <div class="flex items-center justify-between w-full gap-4">
+        <router-link to="/">
+          <div class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg">Back</div>
+        </router-link>
+        <button type="submit" class="w-full px-8 py-4 bg-sky-700 text-slate-100 poppins-regular rounded-lg">Login</button>
+      </div>
     </form>
   </div>
 </template>
@@ -33,7 +56,6 @@ export default {
   },
 
   methods: {
-
     // login method
     async login() {
       // Clear any previous error message
@@ -91,7 +113,6 @@ export default {
         this.error = error.message || "An unexpected error occurred.";
       }
     },
-
   },
 };
 </script>

@@ -11,6 +11,7 @@
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
     "bootstrap-vue": "^2.23.1",
+    "boxicons": "^2.1.4",
     "core-js": "^3.8.3",
     "http-proxy-middleware": "^3.0.0",
     "marked": "^14.1.0",
