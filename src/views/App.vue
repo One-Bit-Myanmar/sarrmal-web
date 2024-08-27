@@ -1,14 +1,15 @@
 <template>
-  <div>
-
+  <div
+    style="height: 100vh"
+    class="flex items-center justify-center bg-slate-100"
+  >
     <!-- application header  -->
-    <div class="header">
+    <!-- <div class="header">
       <h2>Welcome to Sarrmal</h2>
-    </div>
+    </div> -->
 
     <router-view></router-view>
     <!-- before login and register -->
-    
   </div>
 </template>
 
