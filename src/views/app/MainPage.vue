@@ -1,15 +1,26 @@
 <template>
-  <div class="container">
+  <div class="container h-screen flex flex-col">
+
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
         Welcome to SarrMal, make your life style healthy!
       </h1>
-      <div class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24 ">
+      <div
+        class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
+      >
         <!-- Optionally show user info -->
-        <div v-if="user" class="poppins-semibold text-slate-700 text-xl md:text-2xl">
+        <div
+          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
+        >
           <p>
-            Welcome, <span class="text-sky-700">{{ user.username }}</span>
+            Welcome, 
+            <span class="text-sky-700" v-if="user">
+              {{ user.username }}
+            </span>
+            <span class="text-sky-7" v-else>
+              <i class="bx bx-loader-alt animate-spin mr-2"></i>
+            </span>
           </p>
         </div>
 
@@ -91,7 +102,17 @@
     <!-- end of the rest of buttons  -->
 
     <!-- food recommendation section  -->
-    <h1 class="text-xl text-slate-700 poppins-semibold mb-6">Recommended Meals</h1>
+    <h1 class="text-xl text-slate-700 poppins-semibold mb-6">
+      Recommended Meals
+    </h1>
+
+        <!-- Loading Page -->
+    <LoadingPage v-if="loading" />
+
+    <!-- Error Page -->
+    <ErrorPage v-if="error" :message="errorMessage" />
+
+    <div v-else>
     <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
       <!-- Loop through temp_foods array to display food items -->
       <div
@@ -108,33 +129,53 @@
         <p>Calories: {{ food.calories }} g</p>
       </div>
     </div>
+    </div>
     <!-- end of food recommendation section  -->
 
-    
   </div>
 </template>
 
 <script>
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
+import LoadingPage from "@/components/LoadingPage.vue";
+import ErrorPage from "@/components/ErrorPage.vue";
 
 export default {
   name: "MainPage",
+  components: {
+    LoadingPage,
+    ErrorPage,
+  },
   data() {
     return {
       isLoggedIn: false,
       user: null,
       temp_foods: null,
       isMenuOpen: false,
+      loading: true,
+      error: false,
     };
   },
 
-  async created() {
+ async created() {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
+  },
+  async mounted() {
+    // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
-      await this.getMeals();
+      try {
+        await this.getMeals();
+      } catch (error) {
+        this.error = true;
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      this.loading = false;
     }
   },
+
   methods: {
     // this will work first when page is ready
     toggleMenu() {
@@ -239,13 +280,13 @@ export default {
     // chat with ai route
     chatWithAI() {
       // Handle chat with AI logic here
-      this.$router.push('/chat')
+      this.$router.push("/chat");
     },
 
     // analyze photo route
     analyzePhoto() {
       // Handle photo analysis logic here
-      this.$router.push('/analyze')
+      this.$router.push("/analyze");
     },
 
     // error handling function
