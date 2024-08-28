@@ -233,7 +233,7 @@ export default {
     // open setting or profile
     openSettings() {
       // Handle settings logic here
-      console.log('Settings clicked');
+      this.$router.push("/setting");
     },
 
     // chat with ai route
