@@ -144,25 +144,37 @@
               <label for="diseases" class="text-lg font-regular"
                 >Disease:</label
               >
-              <input
-                type="text"
+              <select
                 id="diseases"
                 v-model="diseases"
                 required
                 class="p-3 w-full border shadow rounded-md"
-              />
+              >
+                <option value="">Choose</option>
+                <option value="diabetes">Diabetes</option>
+                <option value="hypertension">Hypertension</option>
+                <option value="celiac disease">Celiac Disease</option>
+                <option value="food allergies">Food Allergies</option>
+                <option value="food allergies">None</option>
+              </select>
             </div>
             <div class="flex flex-col gap-2 w-full">
               <label for="allergies" class="text-lg font-regular"
                 >Allergies:</label
               >
-              <input
-                type="text"
+              <select
                 id="allergies"
                 v-model="allergies"
                 required
                 class="p-3 w-full border shadow rounded-md"
-              />
+              >
+                <option value="">Choose</option>
+                <option value="peanuts">Peanuts</option>
+                <option value="sellfish">Shellfish</option>
+                <option value="eggs">Eggs</option>
+                <option value="milk">Milk</option>
+                <option value="none">None</option>
+              </select>
             </div>
             <div class="flex flex-col gap-2 w-full">
               <label for="exercise" class="text-lg font-regular"
