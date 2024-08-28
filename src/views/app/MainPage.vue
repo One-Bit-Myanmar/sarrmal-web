@@ -2,43 +2,115 @@
   <div class="container">
     <!-- header -->
     <div class="header">
-      <h1>Header</h1>
-      <div>
-        <!-- Show logout button and user settings link if user is logged in -->
-        <button v-if="isLoggedIn" @click="logout">Logout</button>
-        <a v-if="isLoggedIn" href="">Settings</a>
+      <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
+        Welcome to SarrMal, make your life style healthy!
+      </h1>
+      <div class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24 ">
         <!-- Optionally show user info -->
-        <div v-if="user">
-          <p>Welcome, {{ user.username }}</p>
+        <div v-if="user" class="poppins-semibold text-slate-700 text-xl md:text-2xl">
+          <p>
+            Welcome, <span class="text-sky-700">{{ user.username }}</span>
+          </p>
+        </div>
+
+        <!-- hambuger button  -->
+        <div class="relative">
+          <!-- Hamburger Icon -->
+          <button @click="toggleMenu" class="p-2 rounded-md focus:outline-none">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div
+            v-if="isMenuOpen"
+            class="absolute top-12 right-0 w-48 bg-white shadow-lg rounded-md border border-gray-200 p-4"
+          >
+            <ul class="flex flex-col">
+              <li>
+                <button
+                  @click="chatWithAI"
+                  class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Chat with AI
+                </button>
+              </li>
+              <li>
+                <button
+                  @click="analyzePhoto"
+                  class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Calculate Calories
+                </button>
+              </li>
+              <li>
+                <button
+                  v-if="isLoggedIn"
+                  @click="openSettings"
+                  class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Settings
+                </button>
+              </li>
+              <li>
+                <button
+                  @click="logout"
+                  v-if="isLoggedIn"
+                  class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
     <!-- end of header  -->
 
-    <!-- consult with ai button start  -->
-    <router-link to="/chat">
-      <button>Consult about meal with Ai</button>
-    </router-link>
-    <!-- end of consult with ai button  -->
+    <!-- rest of buttons start  -->
+    <div class="flex items-center justify-center mb-10">
+      <router-link to="/meals/confirmed">
+        <p class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl">
+          Personalize Your Meal Plan
+        </p>
+      </router-link>
+    </div>
+    <!-- end of the rest of buttons  -->
 
     <!-- food recommendation section  -->
-    <h1>Food Suggestion for you :)</h1>
-    <div class="grid">
+    <h1 class="text-xl text-slate-700 poppins-semibold mb-6">Recommended Meals</h1>
+    <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
       <!-- Loop through temp_foods array to display food items -->
-      <div class="flex" v-for="food in temp_foods" :key="food._id">
-        <div class="item">
-          <img :src="food.image_url" :alt="food.name" />
-          <p>Name: {{ food.name }}</p>
-          <p>Calories: {{ food.calories }} g</p>
-        </div>
+      <div
+        v-for="food in temp_foods"
+        :key="food._id"
+        class="flex flex-col items-center p-4 border rounded-md shadow-md"
+      >
+        <img
+          :src="food.image_url"
+          :alt="food.name"
+          class="w-full h-32 object-cover mb-2"
+        />
+        <p class="font-semibold">{{ food.name }}</p>
+        <p>Calories: {{ food.calories }} g</p>
       </div>
     </div>
     <!-- end of food recommendation section  -->
 
-    <!-- rest of buttons start  -->
-    <router-link to="/meals/confirmed">Meal Planner</router-link>
-    <router-link to="/analyze">Analyzer Calorie with Photo</router-link>
-    <!-- end of the rest of buttons  -->
+    
   </div>
 </template>
 
@@ -52,6 +124,7 @@ export default {
       isLoggedIn: false,
       user: null,
       temp_foods: null,
+      isMenuOpen: false,
     };
   },
 
@@ -64,6 +137,9 @@ export default {
   },
   methods: {
     // this will work first when page is ready
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
 
     // this will check authentication method
     async checkAuthentication() {
@@ -152,6 +228,24 @@ export default {
           // Optionally handle logout errors here
           this.$router.push("/login"); // Redirect even if there is an error
         });
+    },
+
+    // open setting or profile
+    openSettings() {
+      // Handle settings logic here
+      console.log('Settings clicked');
+    },
+
+    // chat with ai route
+    chatWithAI() {
+      // Handle chat with AI logic here
+      this.$router.push('/chat')
+    },
+
+    // analyze photo route
+    analyzePhoto() {
+      // Handle photo analysis logic here
+      this.$router.push('/analyze')
     },
 
     // error handling function

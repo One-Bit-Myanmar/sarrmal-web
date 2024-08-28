@@ -1,40 +1,84 @@
 <template>
-  <div class="chat-container">
-
-    <router-link to="/main">Back to main</router-link>
-    <div class="chat-header">
-      <h2>AI Chat</h2>
-    </div>
-    <div class="chat-box">
-      <!-- Placeholder text before user starts chatting -->
-      <p v-if="messages.length === 0" class="placeholder-text">
-        Consult with chat bot
-      </p>
-
+  <div class="container">
+    <!-- header -->
+    <div class="header">
+      <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
+        Welcome to SarrMal, make your life style healthy!
+      </h1>
       <div
-        v-for="(message, index) in messages"
-        :key="index"
-        :class="['message', message.sender]"
+        class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-14"
       >
-        <div v-html="renderMarkdown(message.text)"></div>
-        <!-- <span class="timestamp">{{ formatDate(message.date) }}</span> -->
+        <!-- Optionally show user info -->
+        <div
+          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
+        >
+          <p>How do you feel about today?</p>
+        </div>
+        <!-- back button  -->
+        <router-link to="/main">
+          <p
+            class="px-6 py-3 bg-slate-200 text-slate-700 rounded-lg poppins-regular"
+          >
+            Back
+          </p>
+        </router-link>
       </div>
     </div>
-    <div class="chat-input">
-      <input
-        type="text"
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        placeholder="Type a message..."
-      />
-      <button @click="sendMessage" :disabled="!newMessage.trim()">Send</button>
+    <!-- end of header  -->
+
+    <div class="flex flex-col h-screen">
+      <!-- Chat Box -->
+      <div
+        class="chat-box flex-1 overflow-y-auto p-4 bg-gray-100"
+        style="height: 60vh"
+      >
+        <!-- Placeholder text before user starts chatting -->
+        <p v-if="messages.length === 0" class="text-center text-gray-500">
+          Consult with chat bot
+        </p>
+
+        <!-- Messages -->
+        <div
+          v-for="(message, index) in messages"
+          :key="index"
+          :class="[
+            'message',
+            message.sender === 'user'
+              ? 'text-right bg-blue-600 text-slate-200'
+              : 'text-left bg-slate-200 text-slate-700 mb-6',
+          ]"
+        >
+          <div v-html="renderMarkdown(message.text)"></div>
+          <!-- <span class="timestamp">{{ formatDate(message.date) }}</span> -->
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div
+        class="poppins-regular bg-slate-200 shadow flex items-center justify-between p-3 gap-3 rounded-lg"
+      >
+        <input
+          type="text"
+          class="w-full p-3 rounded"
+          v-model="newMessage"
+          @keyup.enter="sendMessage"
+          placeholder="Type a message..."
+        />
+        <button
+          @click="sendMessage"
+          class="flex items-center bg-sky-700 text-slate-50 rounded-lg p-3"
+          :disabled="!newMessage.trim()"
+        >
+          Send <i class="bx bx-send ms-2"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
-import { marked } from 'marked';
+import { marked } from "marked";
 
 export default {
   data() {
@@ -77,13 +121,13 @@ export default {
         this.isLoggedIn = false; // No token means not logged in
         this.$router.push("/login");
       }
-      },
+    },
 
     renderMarkdown(text) {
       return marked(text);
-      },
+    },
 
-      formatDate(dateString) {
+    formatDate(dateString) {
       const date = new Date(dateString);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
@@ -130,20 +174,20 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
-          // Add the previous chat messages to the messages array
-        const chatArray = response.data["data"]
+        // Add the previous chat messages to the messages array
+        const chatArray = response.data["data"];
         // Format the messages for the chat UI
-        this.messages = chatArray.flatMap(chat => [
+        this.messages = chatArray.flatMap((chat) => [
           {
-            text: chat.message,  // User's message
+            text: chat.message, // User's message
             sender: "user",
-            date: chat.date,     // Optional: For displaying timestamp
+            date: chat.date, // Optional: For displaying timestamp
           },
           {
             text: chat.response, // AI's response
             sender: "ai",
-            date: chat.date,     // Optional: For displaying timestamp
-          }
+            date: chat.date, // Optional: For displaying timestamp
+          },
         ]);
       } catch (error) {
         this.HandleError(error);
@@ -184,75 +228,18 @@ export default {
 };
 </script>
 
-<style>
-.chat-container {
-  max-width: 600px;
-  margin: 0 auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-}
-
-.chat-header {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
-.chat-box {
-  flex: 1;
-  padding: 10px;
-  background-color: #f4f4f4;
-  overflow-y: auto;
-}
-
+<style scoped>
 .message {
-  margin-bottom: 10px;
   padding: 10px;
   border-radius: 8px;
-  max-width: 70%;
+  margin-bottom: 8px;
 }
 
 .message.user {
-  background-color: #007bff;
-  color: white;
-  align-self: flex-end;
+  background-color: #0970c4 !important; /* Light blue for user messages */
 }
 
 .message.ai {
-  background-color: #e1e1e1;
-  align-self: flex-start;
-}
-
-.chat-input {
-  display: flex;
-  padding: 10px;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
-}
-
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-right: 10px;
-}
-
-.chat-input button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.chat-input button:hover {
-  background-color: #0056b3;
+  background-color: #f1f1f1 !important; /* Light gray for AI messages */
 }
 </style>

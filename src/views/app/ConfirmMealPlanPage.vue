@@ -1,36 +1,73 @@
 <template>
-  <div>
-    <!-- header  -->
-    <div class="flex">
-      <div class="flex-1">Header</div>
-      <router-link to="/main">back</router-link>
+  <div class="container">
+    <!-- header -->
+    <div class="header">
+      <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
+        Welcome to SarrMal, make your life style healthy!
+      </h1>
+      <div
+        class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
+      >
+        <!-- Optionally show user info -->
+        <div
+          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
+        >
+          <p>How do you feel about today?</p>
+        </div>
+        <!-- back button  -->
+        <router-link to="/main">
+          <p
+            class="px-6 py-3 bg-slate-200 text-slate-700 rounded-lg poppins-regular"
+          >
+            Back
+          </p>
+        </router-link>
+      </div>
     </div>
+    <!-- end of header  -->
+
+    <!-- rest of buttons start  -->
+    <div class="flex items-center justify-center mb-10">
+      <router-link to="/meals/generating">
+        <p class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl">
+          Get new meal set
+        </p>
+      </router-link>
+    </div>
+    <!-- end of the rest of buttons  -->
 
     <!-- meal sets  -->
     <!-- food recommendation section  -->
-    <h1>Your Meal Plans</h1>
-    <div class="grid">
+    <h1 class="text-xl text-slate-700 poppins-semibold mb-6">
+      Your Meal Plans
+    </h1>
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
+    >
       <!-- Loop through temp_foods array to display food items -->
-      <div class="flex" v-for="food in temp_foods" :key="food._id">
-        <div class="item" v-if="food.status == 0">
-          <!-- tick button  -->
-          <button
-            @click="tick(food._id)"
-            v-if="food.status !== 1 && food.status == 0"
-          >
-            +
-          </button>
-          <img :src="food.image_url" :alt="food.name" />
-          <p>Name: {{ food.name }}</p>
-          <p>Calories: {{ food.calories }} g</p>
+      <div
+        v-for="food in temp_foods"
+        :key="food._id"
+        class="flex flex-col items-center p-4 border rounded-md shadow-md bg-white"
+      >
+        <!-- tick button to tick the taken meal  -->
+        <img
+          :src="food.image_url"
+          :alt="food.name"
+          class="w-full h-32 object-cover mb-2 rounded-md"
+        />
+        <div class="flex items-center justify-between w-full">
+          <div class="flex flex-col items-start justify-start">
+            <p class="font-semibold text-lg">{{ food.name }}</p>
+            <p class="text-gray-600">Calories: {{ food.calories }} g</p>
+          </div>
+          <button @click="tick(food._id)" class="bg-sky-600 text-slate-100 px-2 py-1 rounded-lg">
+            <i class="bx bx-check"></i>
+            </button>
         </div>
       </div>
     </div>
     <!-- end of food recommendation section  -->
-
-    <!-- refresh button start  -->
-    <button > <router-link to="/meals/generating"> Get new meal set</router-link> </button>
-    <!-- end of refresh button  -->
   </div>
 </template>
 
@@ -89,7 +126,7 @@ export default {
         // Fetch user data
         const response = await axiosInstance.get("food/get/confirmed", {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
         });
         console.log(response.data);
@@ -184,8 +221,6 @@ export default {
         this.HandleError(error);
       }
     },
-
-    
   },
 };
 </script>

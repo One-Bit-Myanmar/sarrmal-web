@@ -1,17 +1,47 @@
 <template>
-  <div class="photo-page">
-    <h2>Choose Photo Option</h2>
-
-    <router-link to="/main">Back to main</router-link>
-
-    <div class="button-container">
-      <button @click="openCamera">Take Photo</button>
-      <button @click="openFilePicker">Upload Photo</button>
+  <div class="container">
+    <!-- header -->
+    <div class="header">
+      <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
+        Welcome to SarrMal, make your life style healthy!
+      </h1>
+      <div
+        class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-14"
+      >
+        <!-- Optionally show user info -->
+        <div
+          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
+        >
+          <p>Let's take snap photo XD.</p>
+        </div>
+        <!-- back button  -->
+        <router-link to="/main">
+          <p
+            class="px-6 py-3 bg-slate-200 text-slate-700 rounded-lg poppins-regular"
+          >
+            Back
+          </p>
+        </router-link>
+      </div>
     </div>
+    <!-- end of header  -->
 
-    <div v-if="photo" class="photo-preview">
-      <h3>Preview:</h3>
-      <img :src="photo" alt="Selected Photo" />
+    <!-- rest of buttons start  -->
+    <div class="flex items-center justify-center mb-10 gap-6">
+        <button @click="openCamera" class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl">
+          Take Photo
+        </button>
+        <button @click="openFilePicker" class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl">
+          Upload Photo
+        </button>
+    </div>
+    <!-- end of the rest of buttons  -->
+
+    <div class="container mx-auto p-4">
+    <!-- Photo Preview -->
+    <div v-if="photo" class="photo-preview flex flex-col items-center mb-4">
+      <h3 class="text-xl font-semibold mb-2">Preview:</h3>
+      <img :src="photo" alt="Selected Photo" class="w-3/5 h-auto rounded-lg shadow-md" />
     </div>
 
     <!-- Hidden File Input for Uploading -->
@@ -20,13 +50,23 @@
       ref="fileInput"
       @change="handleFileUpload"
       accept="image/*"
-      style="display: none"
+      class="hidden"
     />
 
     <!-- Hidden Video Element for Camera Capture -->
-    <video ref="video" autoplay playsinline style="display: none"></video>
+    <div v-if="isCameraOpen" class="flex justify-center mb-4">
+      <video ref="video" autoplay playsinline class="w-3/5 h-auto rounded-lg shadow-md"></video>
+    </div>
+
     <!-- Capture Photo Button (Visible only when using the camera) -->
-    <button v-if="isCameraOpen" @click="capturePhoto">Capture Photo</button>
+    <button
+      v-if="isCameraOpen"
+      @click="capturePhoto"
+      class="bg-sky-700 text-slate-50 px-4 py-2 rounded-lg shadow-lg hover:bg-sky-600"
+    >
+      Capture Photo
+    </button>
+  </div>
 
     <button
       v-if="photo"

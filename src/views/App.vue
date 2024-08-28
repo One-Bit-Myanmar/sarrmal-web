@@ -1,7 +1,6 @@
 <template>
   <div
-    style="height: 100vh"
-    class="flex items-start justify-center bg-slate-100 p-5"
+    :class="containerClass"
   >
     <!-- application header  -->
     <!-- <div class="header">
@@ -24,10 +23,28 @@ export default {
       user: null,
     };
   },
+
+
   created() {
     // Check if the user is logged in when the component is created
     this.checkAuthentication();
   },
+
+  computed: {
+      containerClass() {
+        const route = this.$route.path;
+        let classes = "flex justify-center bg-slate-50 p-5";
+
+        if (route === '/' || route === '/login' || route === '/register') {
+          classes += " items-center h-screen"; // Center align with 100vh
+        } else {
+          classes += " items-start h-auto"; // Start align with custom height
+        }
+
+        return classes;
+      },
+    },
+
   methods: {
     async checkAuthentication() {
       // Implement your logic to check if the user is logged in
