@@ -61,7 +61,7 @@
             <p class="font-semibold text-lg">{{ food.name }}</p>
             <p class="text-gray-600">Calories: {{ food.calories }} g</p>
           </div>
-          <button @click="tick(food._id)" class="bg-sky-600 text-slate-100 px-2 py-1 rounded-lg">
+          <button @click="tick(food._id)" class="bg-sky-300 text-slate-100 px-2 py-1 rounded-lg">
             <i class="bx bx-check"></i>
             </button>
         </div>

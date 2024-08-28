@@ -27,6 +27,19 @@
     </div>
     <!-- end of header  -->
 
+    <div class="flex flex-col text-center items-center justify-center mb-4 poppins-regular">
+      <div class="w-1/2">
+      <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">choose your preferred meals</h1>
+      <select name="" id="" class="w-full px-4 py-2 rounded-lg shadow">
+        <option value="">Choose</option>
+        <option value="burmese">Burmese</option>
+        <option value="chinese">Chinese</option>
+        <option value="japanese">Japanese</option>
+        <option value="indian">Indian</option>
+      </select>
+      </div>
+    </div>
+
     <!-- rest of buttons start  -->
     <div class="flex items-center justify-center mb-10 gap-6">
         <button @click="refreshPage" class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl">
