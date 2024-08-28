@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 bg-slate-50 rounded-lg shadow poppins-regular">
     <h1 class="mb-8 text-xl poppins-semibold text-sky-700">
-      <i class="bx bx-key" ></i> Login
+      <i class="bx bx-key"></i> Login
     </h1>
     <form
       @submit.prevent="login"
@@ -29,14 +29,27 @@
         />
       </div>
       <!-- Error message -->
-      <div v-if="error" class="error">
+      <div v-if="error" class="error bg-red-200 text-red-700 rounded-lg shadow px-4 py-2">
         {{ error }}
       </div>
       <div class="flex items-center justify-between w-full gap-4">
         <router-link to="/">
-          <div class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg">Back</div>
+          <div
+            class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"
+          >
+            Back
+          </div>
         </router-link>
-        <button type="submit" class="w-full px-8 py-4 bg-sky-700 text-slate-100 poppins-regular rounded-lg">Login</button>
+
+        <!-- login button  -->
+        <button
+          type="submit"
+          class="w-full px-8 py-4 bg-sky-700 text-slate-100 poppins-regular rounded-lg"
+        >
+          <i v-if="loading" class="bx bx-loader-alt animate-spin mr-2"></i>
+          <span v-if="loading">Loading...</span>
+          <span v-else>Login</span>
+        </button>
       </div>
     </form>
   </div>
@@ -52,6 +65,7 @@ export default {
       email: "",
       password: "",
       error: "",
+      loading: false,
     };
   },
 
@@ -59,13 +73,15 @@ export default {
     // login method
     async login() {
       // Clear any previous error message
+      // Set loading to true when the button is clicked
+      this.loading = true;
       this.error = null;
+      console.log("clicked");
       try {
         // Create a FormData object
         const formData = new FormData();
         formData.append("username", this.email); // Note: OAuth2PasswordRequestForm uses 'username' instead of 'email'
         formData.append("password", this.password);
-
         // Send the POST request with form data
         const response = await axiosInstance.post("user/login", formData, {
           headers: {
@@ -79,6 +95,7 @@ export default {
         this.$router.push("/main");
       } catch (error) {
         // error handling for unexpected error
+        this.loading = false;
         this.HandleError(error);
       }
     },

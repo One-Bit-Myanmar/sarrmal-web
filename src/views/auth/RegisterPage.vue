@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 bg-slate-50 rounded-lg shadow poppins-regular">
+  <div class="p-6 bg-light rounded-lg shadow poppins-regular">
     <h1 class="mb-8 text-xl poppins-semibold text-sky-700">Register</h1>
     <form
       @submit.prevent="handleSubmit"
@@ -158,8 +158,9 @@
                 <option value="food allergies">None</option>
               </select>
             </div>
+
             <div class="flex flex-col gap-2 w-full">
-              <label for="allergies" class="text-lg font-regular"
+              <label for="diseases" class="text-lg font-regular"
                 >Allergies:</label
               >
               <select
@@ -169,13 +170,14 @@
                 class="p-3 w-full border shadow rounded-md"
               >
                 <option value="">Choose</option>
-                <option value="peanuts">Peanuts</option>
-                <option value="sellfish">Shellfish</option>
-                <option value="eggs">Eggs</option>
-                <option value="milk">Milk</option>
-                <option value="none">None</option>
+                <option value="diabetes">Peanuts</option>
+                <option value="hypertension">Shellfish</option>
+                <option value="celiac disease">Eggs</option>
+                <option value="food allergies">Milk</option>
+                <option value="food allergies">None</option>
               </select>
             </div>
+
             <div class="flex flex-col gap-2 w-full">
               <label for="exercise" class="text-lg font-regular"
                 >Exercise:</label
@@ -196,13 +198,17 @@
       </div>
 
       <!-- Error message -->
-      <div v-if="error" class="error">
+      <div
+        v-if="error"
+        class="error block w-full text-center bg-red-200 text-red-700 rounded-lg shadow px-4 py-2"
+      >
         {{ error }}
       </div>
 
       <div class="flex items-center justify-between w-full gap-4 px-5">
         <router-link to="/">
-          <div v-if="isSection2Visible"
+          <div
+            v-if="isSection2Visible"
             class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"
           >
             Back
@@ -213,7 +219,9 @@
           class="bg-sky-700 text-slate-100 w-full px-8 py-4 rounded-lg font-semibold"
           type="submit"
         >
-          Register
+          <i v-if="loading" class="bx bx-loader-alt animate-spin mr-2"></i>
+          <span v-if="loading">Loading...</span>
+          <span v-else>Register</span>
         </button>
       </div>
     </form>
@@ -222,6 +230,7 @@
 
 <script>
 import axiosInstance from "@/axios"; // Adjust the import path as needed
+import Tagify from "@yaireo/tagify";
 
 export default {
   // data
@@ -236,10 +245,11 @@ export default {
       weight: "",
       height: "",
       diseases: "",
-      allergies: "",
       exercise: "",
       error: null,
       isSection2Visible: false, // Controls visibility of the second section
+      allergies: "",
+      loading: false,
     };
   },
 
@@ -255,6 +265,19 @@ export default {
     },
   },
 
+  mounted() {
+    var input = document.getElementById("onlyMarvel");
+    console.log(input);
+    var tagify = new Tagify(input, {
+      whitelist: this.mcuHeros,
+      //  whitelist: ["ironman", "antman", "captain america", "thor", "spiderman"],
+      enforceWhitelist: true,
+    });
+    tagify.on("add", function (e) {
+      console.log(e.detail.data);
+    });
+  },
+
   methods: {
     // Show the second section of the form
     showSection2() {
@@ -268,8 +291,8 @@ export default {
 
     async handleSubmit() {
       // Clear any previous error message
+      this.loading = true;
       this.error = null;
-
       // Check if all required fields in section 2 are filled
       if (
         !this.name ||
@@ -316,6 +339,7 @@ export default {
       } catch (error) {
         // Handle registration error
         this.HandleError(error);
+        this.loading = false;
       }
     },
 
@@ -352,5 +376,37 @@ export default {
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
+}
+
+.tags-look .tagify__dropdown__item {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 3px;
+  padding: 0.3em 0.5em;
+  border: 1px solid #ccc;
+  background: #f3f3f3;
+  margin: 0.2em;
+  font-size: 0.85em;
+  color: black;
+  transition: 0s;
+}
+
+.tags-look .tagify__dropdown__item--active {
+  border-color: black;
+}
+
+.tags-look .tagify__dropdown__item:hover {
+  background: lightyellow;
+  border-color: gold;
+}
+
+.tags-look .tagify__dropdown__item--hidden {
+  max-width: 0;
+  max-height: initial;
+  padding: 0.3em 0;
+  margin: 0.2em 0;
+  white-space: nowrap;
+  text-indent: -20px;
+  border: 0;
 }
 </style>

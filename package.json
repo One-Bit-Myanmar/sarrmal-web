@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@yaireo/tagify": "^4.31.1",
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
     "bootstrap-vue": "^2.23.1",
@@ -15,6 +16,7 @@
     "core-js": "^3.8.3",
     "http-proxy-middleware": "^3.0.0",
     "marked": "^14.1.0",
+    "tagify": "^0.1.1",
     "vue": "^3.2.13",
     "vue-router": "^4.4.3"
   },
