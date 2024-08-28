@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container h-screen flex flex-col">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -41,6 +41,14 @@
     <h1 class="text-xl text-slate-700 poppins-semibold mb-6">
       Your Meal Plans
     </h1>
+
+        <!-- Loading Page -->
+    <LoadingPage v-if="loading" />
+
+    <!-- Error Page -->
+    <ErrorPage v-if="error" :message="errorMessage" />
+
+    <div v-else>
     <div
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
     >
@@ -67,30 +75,51 @@
         </div>
       </div>
     </div>
+    </div>
     <!-- end of food recommendation section  -->
   </div>
 </template>
 
 <script>
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
+import LoadingPage from "@/components/LoadingPage.vue";
+import ErrorPage from "@/components/ErrorPage.vue";
 
 export default {
   name: "MealPlanPage",
+  components: {
+    LoadingPage,
+    ErrorPage,
+  },
   data() {
     return {
       isLoggedIn: false,
       user: null,
       temp_foods: null,
+      loading: true,
+      error: false,
     };
   },
 
   async created() {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
+  },
+  async mounted() {
+    // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
-      await this.getMeals();
+      try {
+        await this.getMeals();
+      } catch (error) {
+        this.error = true;
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      this.loading = false;
     }
   },
+
   methods: {
     // this will work first when page is ready
 

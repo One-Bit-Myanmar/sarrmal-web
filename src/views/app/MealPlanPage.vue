@@ -1,11 +1,12 @@
 <template>
   <div class="container h-screen flex flex-col">
-
     <!-- Error Message Box -->
-    <div v-if="showError" class="bg-red-200 poppins-regular text-red-700 p-4 rounded-md mb-4">
+    <div
+      v-if="showError"
+      class="bg-red-200 poppins-regular text-red-700 p-4 rounded-md mb-4"
+    >
       {{ errorMessage }}
     </div>
-
 
     <!-- header -->
     <div class="header">
@@ -39,8 +40,13 @@
         <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">
           choose your preferred meals
         </h1>
-        <select name="" id="" class="w-full px-4 py-2 rounded-lg shadow">
-          <option value="">Choose</option>
+        <select
+          name=""
+          v-model="preferredFood"
+          id=""
+          class="w-full px-4 py-2 rounded-lg shadow"
+        >
+          <option value="" disabled selected>Choose</option>
           <option value="burmese">Burmese</option>
           <option value="chinese">Chinese</option>
           <option value="japanese">Japanese</option>
@@ -66,8 +72,13 @@
         <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">
           choose what type of food you want
         </h1>
-        <select name="" id="" class="w-full px-4 py-2 rounded-lg shadow">
-          <option value="">Choose</option>
+        <select
+          v-model="foodType"
+          name=""
+          id=""
+          class="w-full px-4 py-2 rounded-lg shadow"
+        >
+          <option value="" disabled selected>Choose</option>
           <option value="Vegetarian">Vegetarian</option>
           <option value="Non-Vegetarian">Non-Vegetarian</option>
           <option value="Healthy">Healthy</option>
@@ -88,13 +99,17 @@
         @click="refreshPage"
         class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl"
       >
-        Generate
+        <i v-if="isgenerating" class="bx bx-loader-alt animate-spin mr-2"></i>
+        <span v-if="isgenerating">Generating...</span>
+        <span v-else>Generate</span>
       </button>
       <button
         @click="confirm"
         class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl"
       >
-        Confirm Sets
+        <i v-if="isconfirming" class="bx bx-loader-alt animate-spin mr-2"></i>
+        <span v-if="isconfirming">Confirming...</span>
+        <span v-else>Confirm Now</span>
       </button>
     </div>
     <!-- end of the rest of buttons  -->
@@ -111,7 +126,7 @@
     <!-- Error Page -->
     <ErrorPage v-if="error" :message="errorMessage" />
 
-    <div v-else>
+    <div v-if="!loading">
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
       >
@@ -155,6 +170,8 @@ export default {
       error: false,
       showError: false,
       errorMessage: "",
+      isgenerating: false,
+      isconfirming: false,
     };
   },
 
@@ -162,7 +179,6 @@ export default {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
   },
-
 
   async mounted() {
     // Fetch meals if the user is logged in
@@ -286,25 +302,39 @@ export default {
     async refreshPage() {
       // Check if both dropdowns have values selected
       if (!this.preferredFood || !this.foodType) {
-        this.showErrorMessage("Please choose both preferred food and food type.");
+        this.showErrorMessage(
+          "Please choose both preferred food and food type."
+        );
       } else {
+        this.isgenerating = true;
+        this.loading = true;
+        this.error = false;
         try {
           // Reload the page
           // window.location.reload();
           // Fetch user data
           const token = localStorage.getItem("authToken");
-          const response = await axiosInstance.get("temp/food/get/recommended", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          window.location.reload();
-          console.log("generated", response);
+          const response = await axiosInstance.get(
+            "temp/food/get/recommended",
+            {
+              params: {
+                preferred_food: this.preferredFood,
+                food_type: this.foodType,
+              },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log("generated", response.data);
+          this.isgenerating = false;
+          this.loading = false;
         } catch (error) {
           this.HandleError(error);
+          this.isgenerating = false;
+          this.loading = false;
         }
       }
-      
     },
 
     // show message box
@@ -322,6 +352,7 @@ export default {
     async confirm() {
       console.log("clicked");
       try {
+        this.isconfirming = true;
         // Fetch user data
         const token = localStorage.getItem("authToken");
         console.log("token", token);
@@ -339,6 +370,7 @@ export default {
         console.log(response.data);
         this.$router.push("/meals/confirmed");
       } catch (error) {
+        this.isconfirming = false;
         this.HandleError(error);
       }
     },
