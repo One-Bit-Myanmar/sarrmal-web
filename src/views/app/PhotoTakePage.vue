@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container poppins-regular">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -59,7 +59,8 @@
     </div>
 
     <!-- Capture Photo Button (Visible only when using the camera) -->
-    <button
+    <div class="flex items-center justify-center w-full">
+      <button 
       v-if="isCameraOpen"
       @click="capturePhoto"
       class="bg-sky-700 text-slate-50 px-4 py-2 rounded-lg shadow-lg hover:bg-sky-600"
@@ -67,37 +68,100 @@
       Capture Photo
     </button>
   </div>
+    </div>
 
-    <button
+    <div class="flex items-center justify-center w-full">
+      <button
       v-if="photo"
+      class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl"
       @click="analyzePhoto"
       :disabled="isAnalyzeButtonDisabled"
     >
       Analyze
     </button>
-
-    <div class="" v-if="food_info">
-        <h3>Result:</h3>
-        <p>name : {{ food_info.name }}</p>
-        <p>category : {{ food_info.category }}</p>
-        <p>How to cook : {{ food_info.how_to_cook }}</p>
-        <p>meal time : {{ food_info.meal_time }}</p>
-        <p>Ingredient: 
-            <ul>
-                <li v-for="(ingredient, index) in food_info.ingredients" :key="index">
-                    {{ ingredient }}
-                </li>
-            </ul>
-        </p>
     </div>
 
+    <!-- add to meal plan button  -->
+    <div class="flex items-center justify-center w-full">
     <button
       v-if="addToMealPlan"
+      class="bg-slate-200 rounded-lg text-sky-700 capitalize font-semibold"
       @click="addToMealPlanner"
       :disabled="isAddButtonDisabled"
     >
       Add to meal plan
     </button>
+    </div>
+
+    <div class="flex px-10 py-8 items-center justify-center bg-white rounded-lg shadow">
+      <!-- <div class="" v-if="food_info">
+          <h3>Result:</h3>
+          <p>name : {{ food_info.name }}</p>
+          <p>category : {{ food_info.category }}</p>
+          <p>How to cook : {{ food_info.how_to_cook }}</p>
+          <p>meal time : {{ food_info.meal_time }}</p>
+          <p>Ingredient: 
+              <ul>
+                  <li v-for="(ingredient, index) in food_info.ingredients" :key="index">
+                      {{ ingredient }}
+                  </li>
+              </ul>
+          </p>
+      </div> -->
+
+      <!-- the result show session  -->
+      <div class="flex flex-col items-start justify-start w-full" v-if="food_info">
+          <h3 class="text-slate-700 poppins-semibold mb-3 text-2xl">Result</h3>
+          <div class="flex flex-col items-start justify-start mb-5">
+            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> name </p>
+            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+              {{ food_info.name }}
+            </p>
+          </div>
+          
+          <div class="flex flex-col items-start justify-start mb-5">
+            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> Category </p>
+            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+              {{ food_info.category }}
+            </p>
+          </div>
+
+          <div class="flex flex-col items-start justify-start mb-5">
+            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> How to cook </p>
+            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+             {{ food_info.how_to_cook }}
+            </p>
+          </div>
+
+          <div class="flex flex-col items-start justify-start mb-5">
+            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> Meal time </p>
+            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+              {{ food_info.meal_time }}
+            </p>
+          </div>
+
+          <div class="flex flex-col items-start justify-start mb-5">
+            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> Ingredients </p>
+            <ul class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+              <li v-for="(ingredient, index) in food_info.ingredients" :key="index">
+                {{ ingredient }}
+              </li>
+            </ul>
+          </div>
+
+      </div>
+      <!-- else if  -->
+      <div class="flex flex-col items-center justify-center w-full" v-else-if="food_error">
+        <h1 class="text-yellow-500 text-center">{{ food_error }}</h1>
+      </div>
+      <!-- else  -->
+      <div class="flex flex-col items-center justify-center w-full" v-else>
+        <h1 class="text-slate-500 text-center">the result will show here.</h1>
+      </div>
+    </div>
+
+
+
   </div>
 </template>
 
@@ -108,6 +172,7 @@ export default {
   data() {
     return {
       food_info: null,
+      food_error: null,
       photo: null, // This will store the URL of the selected photo
       file: null,
       isCameraOpen: false, // Track whether the camera is open
@@ -210,7 +275,11 @@ export default {
               },
             }
             );
-          this.food_info = response.data
+          if(response.data.message){
+            this.food_error = response.data.message
+          }else{
+            this.food_info = response.data
+          }
           // Handle the API response
           console.log(response.data);
           if (!response.data.message) {
@@ -295,6 +364,8 @@ export default {
             this.$refs.video.srcObject = null; // Clear the video source
           }
         }
+        this.food_info = null;
+        this.food_error = null;
         reader.readAsDataURL(file); // Convert the file to a data URL
       }
     },

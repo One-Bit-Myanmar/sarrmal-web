@@ -30,12 +30,13 @@
       <!-- Chat Box -->
       <div
         class="chat-box flex-1 overflow-y-auto p-4 bg-gray-100"
-        style="height: 60vh"
+        style="height: 50vh"
       >
         <!-- Placeholder text before user starts chatting -->
-        <p v-if="messages.length === 0" class="text-center text-gray-500">
+        <p v-if="messages.length === 0" class="text-center text-gray-500 poppins-regular mt-24">
           Consult with chat bot
         </p>
+    
 
         <!-- Messages -->
         <div
@@ -44,7 +45,7 @@
           :class="[
             'message',
             message.sender === 'user'
-              ? 'text-right bg-blue-600 text-slate-200'
+              ? 'text-right bg-sky-600 text-slate-200'
               : 'text-left bg-slate-200 text-slate-700 mb-6',
           ]"
         >
