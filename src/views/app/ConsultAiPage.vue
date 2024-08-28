@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container h-screen flex flex-col">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -9,9 +9,7 @@
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-14"
       >
         <!-- Optionally show user info -->
-        <div
-          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
-        >
+        <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
           <p>How do you feel about today?</p>
         </div>
         <!-- back button  -->
@@ -26,52 +24,63 @@
     </div>
     <!-- end of header  -->
 
-    <div class="flex flex-col h-screen">
-      <!-- Chat Box -->
-      <div
-        class="chat-box flex-1 overflow-y-auto p-4 bg-gray-100"
-        style="height: 50vh"
-      >
-        <!-- Placeholder text before user starts chatting -->
-        <p v-if="messages.length === 0" class="text-center text-gray-500 poppins-regular mt-24">
-          Consult with chat bot
-        </p>
-    
-
-        <!-- Messages -->
+    <div class="flex items-center justify-center w-full">
+      <div class="flex flex-col h-screen w-full md:w-1/2">
+        <!-- Chat Box -->
         <div
-          v-for="(message, index) in messages"
-          :key="index"
-          :class="[
-            'message',
-            message.sender === 'user'
-              ? 'text-right bg-sky-600 text-slate-200'
-              : 'text-left bg-slate-200 text-slate-700 mb-6',
-          ]"
+          class="chat-box flex-1 overflow-y-auto p-4 bg-gray-100"
+          style="height: 30vh !important"
         >
-          <div v-html="renderMarkdown(message.text)"></div>
-          <!-- <span class="timestamp">{{ formatDate(message.date) }}</span> -->
-        </div>
-      </div>
+          <!-- Loading Page -->
+          <LoadingPage v-if="loading" />
 
-      <!-- Message Input -->
-      <div
-        class="poppins-regular bg-slate-200 shadow flex items-center justify-between p-3 gap-3 rounded-lg"
-      >
-        <input
-          type="text"
-          class="w-full p-3 rounded"
-          v-model="newMessage"
-          @keyup.enter="sendMessage"
-          placeholder="Type a message..."
-        />
-        <button
-          @click="sendMessage"
-          class="flex items-center bg-sky-700 text-slate-50 rounded-lg p-3"
-          :disabled="!newMessage.trim()"
+          <!-- Error Page -->
+          <ErrorPage v-if="error" :message="errorMessage" />
+
+          <div v-else>
+            <!-- Messages -->
+            <div
+              v-for="(message, index) in messages"
+              :key="index"
+              :class="[
+                'message mb-10',
+                message.sender === 'user'
+                  ? 'text-right bg-sky-600 text-slate-200'
+                  : 'text-left bg-slate-200 text-slate-700 mb-6',
+              ]"
+            >
+              <div v-html="renderMarkdown(message.text)"></div>
+              <!-- <span class="timestamp">{{ formatDate(message.date) }}</span> -->
+            </div>
+          </div>
+
+          <div
+            v-if="temp_message"
+            class="text-right bg-sky-600 text-slate-200 p-2 rounded-lg"
+          >
+            {{ temp_message }}
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div
+          class="poppins-regular bg-slate-200 shadow flex items-center justify-between p-3 gap-3 rounded-lg"
         >
-          Send <i class="bx bx-send ms-2"></i>
-        </button>
+          <input
+            type="text"
+            class="w-full p-3 rounded"
+            v-model="newMessage"
+            @keyup.enter="sendMessage"
+            placeholder="Type a message..."
+          />
+          <button
+            @click="sendMessage"
+            class="flex items-center bg-sky-700 text-slate-50 rounded-lg p-3"
+            :disabled="!newMessage.trim()"
+          >
+            Send <i class="bx bx-send ms-2"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -80,20 +89,41 @@
 <script>
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
 import { marked } from "marked";
+import LoadingPage from "@/components/LoadingPage.vue";
+import ErrorPage from "@/components/ErrorPage.vue";
 
 export default {
+  name: "ConsultAiPage",
+  components: {
+    LoadingPage,
+    ErrorPage,
+  },
   data() {
     return {
       messages: [], // Empty initially
       newMessage: "",
+      loading: true,
+      error: false,
+      temp_message: null,
     };
   },
 
   async created() {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
+  },
+  async mounted() {
+    // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
-      await this.getPreviousChat();
+      try {
+        await this.getPreviousChat();
+      } catch (error) {
+        this.error = true;
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      this.loading = false;
     }
   },
 
@@ -135,6 +165,7 @@ export default {
 
     // send message function
     async sendMessage() {
+      this.temp_message = this.newMessage;
       if (this.newMessage.trim() !== "") {
         try {
           const token = localStorage.getItem("authToken");
@@ -157,6 +188,7 @@ export default {
             text: response.data.data || "I'm an AI, how can I help you?",
             sender: "ai",
           });
+          this.temp_message = null;
         } catch (error) {
           this.HandleError(error);
         }

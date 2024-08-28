@@ -146,6 +146,7 @@ export default {
     LoadingPage,
     ErrorPage,
   },
+  
   data() {
     return {
       isLoggedIn: false,
