@@ -55,7 +55,7 @@
 
     <!-- Hidden Video Element for Camera Capture -->
     <div v-if="isCameraOpen" class="flex justify-center mb-4">
-      <video ref="video" autoplay playsinline class="w-3/5 h-auto rounded-lg shadow-md"></video>
+      <video ref="video" autoplay playsinline class="w-3/5 h-auto rounded-lg shadow-md" style="display: none;"></video>
     </div>
 
     <!-- Capture Photo Button (Visible only when using the camera) -->
