@@ -1,5 +1,12 @@
 <template>
-  <div class="container">
+  <div class="container h-screen flex flex-col">
+
+    <!-- Error Message Box -->
+    <div v-if="showError" class="bg-red-200 poppins-regular text-red-700 p-4 rounded-md mb-4">
+      {{ errorMessage }}
+    </div>
+
+
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -9,10 +16,7 @@
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
       >
         <!-- Optionally show user info -->
-        <div
-          v-if="user"
-          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
-        >
+        <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
           <p>Are you happy?</p>
         </div>
         <!-- back button  -->
@@ -27,27 +31,71 @@
     </div>
     <!-- end of header  -->
 
-    <div class="flex flex-col text-center items-center justify-center mb-4 poppins-regular">
-      <div class="w-1/2">
-      <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">choose your preferred meals</h1>
-      <select name="" id="" class="w-full px-4 py-2 rounded-lg shadow">
-        <option value="">Choose</option>
-        <option value="burmese">Burmese</option>
-        <option value="chinese">Chinese</option>
-        <option value="japanese">Japanese</option>
-        <option value="indian">Indian</option>
-      </select>
+    <!-- preferred food option -->
+    <div
+      class="flex flex-col mb-10 text-center items-center justify-center poppins-regular"
+    >
+      <div class="w-full md:w-1/2">
+        <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">
+          choose your preferred meals
+        </h1>
+        <select name="" id="" class="w-full px-4 py-2 rounded-lg shadow">
+          <option value="">Choose</option>
+          <option value="burmese">Burmese</option>
+          <option value="chinese">Chinese</option>
+          <option value="japanese">Japanese</option>
+          <option value="indian">Indian</option>
+          <option value="Western">Western</option>
+          <option value="Korean">Korean</option>
+          <option value="Vietnamese">Vietnamese</option>
+          <option value="Indonesian">Indonesian</option>
+          <option value="Malay">Malay</option>
+          <option value="Filipino">Filipino</option>
+          <option value="Mexican">Mexican</option>
+          <option value="French">French</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!--  food type option -->
+    <div
+      class="flex flex-col text-center items-center justify-center mb-10 poppins-regular"
+    >
+      <div class="w-full md:w-1/2">
+        <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">
+          choose what type of food you want
+        </h1>
+        <select name="" id="" class="w-full px-4 py-2 rounded-lg shadow">
+          <option value="">Choose</option>
+          <option value="Vegetarian">Vegetarian</option>
+          <option value="Non-Vegetarian">Non-Vegetarian</option>
+          <option value="Healthy">Healthy</option>
+          <option value="Gym Rat">Gym Rat</option>
+          <option value="High-Calorie">High-Calorie</option>
+          <option value="High-Fibre">High-Fibre</option>
+          <option value="Low-sugar">Low-sugar</option>
+          <option value="High-Protein">High-Protein</option>
+          <option value="Balanced">Balanced</option>
+          <option value="Others">Others</option>
+        </select>
       </div>
     </div>
 
     <!-- rest of buttons start  -->
     <div class="flex items-center justify-center mb-10 gap-6">
-        <button @click="refreshPage" class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl">
-          Refresh
-        </button>
-        <button @click="confirm" class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl">
-          Confirm Sets
-        </button>
+      <button
+        @click="refreshPage"
+        class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl"
+      >
+        Generate
+      </button>
+      <button
+        @click="confirm"
+        class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl"
+      >
+        Confirm Sets
+      </button>
     </div>
     <!-- end of the rest of buttons  -->
 
@@ -56,49 +104,81 @@
     <h1 class="text-xl text-slate-700 poppins-semibold mb-6">
       Generated Meal Sets
     </h1>
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
-    >
-      <!-- Loop through temp_foods array to display food items -->
+
+    <!-- Loading Page -->
+    <LoadingPage v-if="loading" />
+
+    <!-- Error Page -->
+    <ErrorPage v-if="error" :message="errorMessage" />
+
+    <div v-else>
       <div
-        v-for="food in temp_foods"
-        :key="food._id"
-        class="flex flex-col items-center p-4 border rounded-md shadow-md bg-white"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
       >
-        <img
-          :src="food.image_url"
-          :alt="food.name"
-          class="w-full h-32 object-cover mb-2 rounded-md"
-        />
-        <p class="font-semibold text-lg">{{ food.name }}</p>
-        <p class="text-gray-600">Calories: {{ food.calories }} g</p>
+        <!-- Loop through temp_foods array to display food items -->
+        <div
+          v-for="food in temp_foods"
+          :key="food._id"
+          class="flex flex-col items-center p-4 border rounded-md shadow-md bg-white"
+        >
+          <img
+            :src="food.image_url"
+            :alt="food.name"
+            class="w-full h-32 object-cover mb-2 rounded-md"
+          />
+          <p class="font-semibold text-lg">{{ food.name }}</p>
+          <p class="text-gray-600">Calories: {{ food.calories }} g</p>
+        </div>
       </div>
     </div>
-    <!-- end of food recommendation section  -->  
-
+    <!-- end of food recommendation section  -->
   </div>
 </template>
 
 <script>
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
+import LoadingPage from "@/components/LoadingPage.vue";
+import ErrorPage from "@/components/ErrorPage.vue";
 
 export default {
   name: "MealPlanPage",
+  components: {
+    LoadingPage,
+    ErrorPage,
+  },
   data() {
     return {
       isLoggedIn: false,
       user: null,
       temp_foods: null,
+      loading: true,
+      error: false,
+      showError: false,
+      errorMessage: "",
     };
   },
 
   async created() {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
+  },
+
+
+  async mounted() {
+    // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
-      await this.getMeals();
+      try {
+        await this.getMeals();
+      } catch (error) {
+        this.error = true;
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      this.loading = false;
     }
   },
+
   methods: {
     // this will work first when page is ready
 
@@ -204,21 +284,38 @@ export default {
 
     // refresh or regenerate the page
     async refreshPage() {
-      try {
-        // Reload the page
-        // window.location.reload();
-        // Fetch user data
-        const token = localStorage.getItem("authToken");
-        const response = await axiosInstance.get("temp/food/get/recommended", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        window.location.reload();
-        console.log("generated", response);
-      } catch (error) {
-        this.HandleError(error);
+      // Check if both dropdowns have values selected
+      if (!this.preferredFood || !this.foodType) {
+        this.showErrorMessage("Please choose both preferred food and food type.");
+      } else {
+        try {
+          // Reload the page
+          // window.location.reload();
+          // Fetch user data
+          const token = localStorage.getItem("authToken");
+          const response = await axiosInstance.get("temp/food/get/recommended", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          window.location.reload();
+          console.log("generated", response);
+        } catch (error) {
+          this.HandleError(error);
+        }
       }
+      
+    },
+
+    // show message box
+    showErrorMessage(message) {
+      this.errorMessage = message;
+      this.showError = true;
+
+      // Hide the error message after 5 seconds
+      setTimeout(() => {
+        this.showError = false;
+      }, 5000);
     },
 
     // confirm the meal set
@@ -236,7 +333,8 @@ export default {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          });
+          }
+        );
         // Process the response data
         console.log(response.data);
         this.$router.push("/meals/confirmed");
