@@ -11,6 +11,7 @@ import MealDetailPage from "@/views/app/MealDetailPage.vue";
 import MealPlanPage from "@/views/app/MealPlanPage.vue";
 import PhotoTakePage from "@/views/app/PhotoTakePage.vue";
 import SettingPage from "@/views/app/SettingPage.vue";
+import HistoryPage from "@/views/app/HistoryPage.vue";
 
 const routes = [
   {
@@ -68,6 +69,12 @@ const routes = [
     path: "/detail",
     name: "detail",
     component: MealDetailPage,
+    meta: { requiresAuth: true }, // Add a meta field to mark this route as requiring authentication
+  },
+  {
+    path: "/history",
+    name: "history",
+    component: HistoryPage,
     meta: { requiresAuth: true }, // Add a meta field to mark this route as requiring authentication
   },
 ];

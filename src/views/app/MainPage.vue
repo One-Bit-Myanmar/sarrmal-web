@@ -1,6 +1,5 @@
 <template>
   <div class="container h-screen flex flex-col">
-
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -10,11 +9,9 @@
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
       >
         <!-- Optionally show user info -->
-        <div
-          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
-        >
+        <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
           <p>
-            Welcome, 
+            Welcome,
             <span class="text-sky-700" v-if="user">
               {{ user.username }}
             </span>
@@ -68,6 +65,14 @@
               </li>
               <li>
                 <button
+                  @click="history"
+                  class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  History
+                </button>
+              </li>
+              <li>
+                <button
                   v-if="isLoggedIn"
                   @click="openSettings"
                   class="w-full px-4 py-2 text-left hover:bg-gray-100"
@@ -106,32 +111,31 @@
       Recommended Meals
     </h1>
 
-        <!-- Loading Page -->
+    <!-- Loading Page -->
     <LoadingPage v-if="loading" />
 
     <!-- Error Page -->
     <ErrorPage v-if="error" :message="errorMessage" />
 
     <div v-else>
-    <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
-      <!-- Loop through temp_foods array to display food items -->
-      <div
-        v-for="food in temp_foods"
-        :key="food._id"
-        class="flex flex-col items-center p-4 border rounded-md shadow-md"
-      >
-        <img
-          :src="food.image_url"
-          :alt="food.name"
-          class="w-full h-32 object-cover mb-2"
-        />
-        <p class="font-semibold">{{ food.name }}</p>
-        <p>Calories: {{ food.calories }} g</p>
+      <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
+        <!-- Loop through temp_foods array to display food items -->
+        <div
+          v-for="food in temp_foods"
+          :key="food._id"
+          class="flex flex-col items-center p-4 border rounded-md shadow-md"
+        >
+          <img
+            :src="food.image_url"
+            :alt="food.name"
+            class="w-full h-32 object-cover mb-2"
+          />
+          <p class="font-semibold">{{ food.name }}</p>
+          <p>Calories: {{ food.calories }} g</p>
+        </div>
       </div>
     </div>
-    </div>
     <!-- end of food recommendation section  -->
-
   </div>
 </template>
 
@@ -146,7 +150,7 @@ export default {
     LoadingPage,
     ErrorPage,
   },
-  
+
   data() {
     return {
       isLoggedIn: false,
@@ -158,7 +162,7 @@ export default {
     };
   },
 
- async created() {
+  async created() {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
   },
@@ -288,6 +292,11 @@ export default {
     analyzePhoto() {
       // Handle photo analysis logic here
       this.$router.push("/analyze");
+    },
+
+    // go to the history page
+    history() {
+      this.$router.push("/history");
     },
 
     // error handling function
