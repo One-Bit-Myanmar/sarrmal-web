@@ -105,6 +105,7 @@ export default {
       loading: true,
       error: false,
       temp_message: null,
+      errorMessage: ''
     };
   },
 
@@ -119,6 +120,7 @@ export default {
         await this.getPreviousChat();
       } catch (error) {
         this.error = true;
+        this.errorMessage = error
       } finally {
         this.loading = false;
       }
