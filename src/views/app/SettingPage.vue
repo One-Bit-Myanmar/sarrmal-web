@@ -128,31 +128,7 @@
             </ul>
           </div>
 
-          <ul class="grid w-full gap-3 md:grid-cols-4">
-            <li>
-              <input
-                type="checkbox"
-                id="react-option"
-                value=""
-                class="hidden peer"
-                required=""
-              />
-              <label
-                for="react-option"
-                class="inline-flex 
-                items-center justify-between w-auto px-2 py-2
-                 text-slate-700 bg-white border-2 border-gray-200 
-                 rounded-lg cursor-pointer hover:text-gray-300 
-                 border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 text-gray-400 bg-gray-800 hover:bg-gray-700"
-              >
-                <div class="block">
-                  <div class="w-auto font-semibold">React Js</div>
-                </div>
-              </label>
-            </li>
-            
-          </ul>
-
+          
           <!-- Allergies -->
           <div
             class="flex flex-col items-start text-start w-full justify-center mb-3"
