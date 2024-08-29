@@ -36,86 +36,167 @@
             Profile
           </h1>
           <div class="bg-slate-200 rounded-lg px-3 py-2">
-            <router-link to="/">
-              <i class="bx bx-pencil text-sky-600 text-md font-semibold"></i>
-              Edit
-            </router-link>
-          </div>
-        </div>
-        <!-- username  -->
-        <div
-          class="flex flex-col items-center text-center w-full justify-center mb-3"
-        >
-          <p class="text-sky-700">Username</p>
-          <span class="text-slate-700">{{ user.username }}</span>
-        </div>
-        <!-- email  -->
-        <div
-          class="flex flex-col items-center text-center w-full justify-center mb-3"
-        >
-          <p class="text-sky-700">Email</p>
-          <span class="text-slate-700">{{ user.email }}</span>
-        </div>
-        <!-- weight and height -->
-        <div class="flex items-center justify-center w-full mb-3">
-          <div
-            class="flex flex-col items-center text-center w-full justify-center"
-          >
-            <p class="text-sky-700">Weight</p>
-            <span class="text-slate-700">{{ user.weight }} kg</span>
-          </div>
-          <div
-            class="flex flex-col items-center text-center w-full justify-center"
-          >
-            <p class="text-sky-700">Height</p>
-            <span class="text-slate-700">{{ user.height }} cm</span>
-          </div>
-        </div>
-        <!-- disease  -->
-        <!-- Diseases -->
-        <div
-          class="flex flex-col items-center text-center w-full justify-center mb-3"
-        >
-          <p class="text-sky-700">Diseases</p>
-
-          <!-- Loop through the user.diseases array -->
-          <ul class="text-slate-700">
-            <li
-              v-for="(disease, index) in user.diseases"
-              :key="index"
-              class="bg-slate-200 rounded-lg p-2"
+            <button
+              @click="toggleEdit"
+              class="text-sky-600 text-md font-semibold"
             >
-              {{ disease }}
-            </li>
-          </ul>
+              <i class="bx" :class="isEditing ? 'bx-save' : 'bx-pencil'"></i>
+              {{ isEditing ? "Update" : "Edit" }}
+            </button>
+          </div>
         </div>
 
-        <!-- disease  -->
-        <div
-          class="flex flex-col items-center text-center w-full justify-center mb-3"
-        >
-          <p class="text-sky-700">Allergies</p>
+        <form action="">
+          <!-- Username -->
+          <div
+            class="flex flex-col items-start text-start w-full justify-center mb-3"
+          >
+            <p class="text-sky-700">Username</p>
+            <input
+              type="text"
+              class="text-slate-700 w-full bg-slate-200 rounded-lg p-2"
+              v-model="user.username"
+              :disabled="!isEditing"
+            />
+          </div>
 
-          <!-- Loop through the user.diseases array -->
-          <ul class="text-slate-700">
-            <li
-              v-for="(allergie, index) in user.allergies"
-              :key="index"
-              class="bg-slate-200 rounded-lg p-2"
+          <!-- Email -->
+          <div
+            class="flex flex-col items-start text-start w-full justify-center mb-3"
+          >
+            <p class="text-sky-700">Email</p>
+            <input
+              type="text"
+              class="text-slate-700 w-full bg-slate-200 rounded-lg p-2"
+              v-model="user.email"
+              :disabled="!isEditing"
+            />
+          </div>
+
+          <!-- Email -->
+          <div
+            class="flex flex-col items-start text-start w-full justify-center mb-3"
+          >
+            <p class="text-sky-700">Age</p>
+            <input
+              type="number"
+              class="text-slate-700 w-full bg-slate-200 rounded-lg p-2"
+              v-model="user.age"
+              :disabled="!isEditing"
+            />
+          </div>
+
+          <!-- Weight and Height -->
+          <div class="flex items-center justify-center gap-3 w-full mb-3">
+            <div
+              class="flex flex-col items-start text-start w-full justify-center"
             >
-              {{ allergie }}
-            </li>
-          </ul>
-        </div>
-        <!-- exercis  -->
-        <div
-          class="flex flex-col items-center text-center w-full justify-center mb-3"
-        >
-          <p class="text-sky-700">Activity</p>
-          <span class="text-slate-700">{{ user.exercises }}</span>
-        </div>
+              <p class="text-sky-700">Weight (kg)</p>
+              <input
+                type="number"
+                class="text-slate-700 w-full bg-slate-200 rounded-lg p-2"
+                v-model="user.weight"
+                :disabled="!isEditing"
+              />
+            </div>
+            <div
+              class="flex flex-col items-center text-center w-full justify-center"
+            >
+              <p class="text-sky-700">Height (cm)</p>
+              <input
+                type="number"
+                class="text-slate-700 w-full bg-slate-200 rounded-lg p-2"
+                v-model="user.height"
+                :disabled="!isEditing"
+              />
+            </div>
+          </div>
 
-        <!-- button group  -->
+          <!-- Diseases -->
+          <div
+            class="flex flex-col items-start text-start w-full justify-center mb-3"
+          >
+            <p class="text-sky-700">Diseases</p>
+            <ul class="text-slate-700 w-full">
+              <li
+                v-for="(disease, index) in user.diseases"
+                :key="index"
+                class="bg-slate-200 rounded-lg p-2"
+              >
+                {{ disease }}
+              </li>
+            </ul>
+          </div>
+
+          <ul class="grid w-full gap-3 md:grid-cols-4">
+            <li>
+              <input
+                type="checkbox"
+                id="react-option"
+                value=""
+                class="hidden peer"
+                required=""
+              />
+              <label
+                for="react-option"
+                class="inline-flex 
+                items-center justify-between w-auto px-2 py-2
+                 text-slate-700 bg-white border-2 border-gray-200 
+                 rounded-lg cursor-pointer hover:text-gray-300 
+                 border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 text-gray-400 bg-gray-800 hover:bg-gray-700"
+              >
+                <div class="block">
+                  <div class="w-auto font-semibold">React Js</div>
+                </div>
+              </label>
+            </li>
+            
+          </ul>
+
+          <!-- Allergies -->
+          <div
+            class="flex flex-col items-start text-start w-full justify-center mb-3"
+          >
+            <p class="text-sky-700">Allergies</p>
+            <ul class="text-slate-700 w-full">
+              <li
+                v-for="(allergie, index) in user.allergies"
+                :key="index"
+                class="bg-slate-200 rounded-lg p-2"
+              >
+                {{ allergie }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Activity -->
+          <div
+            class="flex flex-col items-start text-start w-full justify-center mb-3"
+          >
+            <p class="text-sky-700">Activity</p>
+            <select
+              name="exercises"
+              class="text-slate-700 bg-slate-200 rounded-lg p-2 w-full"
+              v-model="user.exercises"
+              :disabled="!isEditing"
+            >
+              <option value="">Choose</option>
+              <option :value="'light'" :selected="user.exercises === 'light'">
+                Light
+              </option>
+              <option
+                :value="'moderate'"
+                :selected="user.exercises === 'moderate'"
+              >
+                Moderate
+              </option>
+              <option :value="'active'" :selected="user.exercises === 'active'">
+                Active
+              </option>
+            </select>
+          </div>
+        </form>
+        <!-- Button Group -->
         <div class="flex items-center justify-center gap-6">
           <button
             @click="logout"
@@ -155,6 +236,14 @@ export default {
 
   data() {
     return {
+      username: "",
+      email: "",
+      weight: "",
+      height: "",
+      diseases: [],
+      allergies: [],
+      activity: "",
+      isEditing: false,
       isLoggedIn: false,
       user: null,
       temp_foods: null,
@@ -210,80 +299,6 @@ export default {
       }
     },
 
-    // logout account
-    logout() {
-      // Check if there is a token in localStorage
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        // Handle the case where there is no token
-        console.error("No authentication token found.");
-        this.$router.push("/login");
-        return;
-      }
-      // Assuming you have a logout endpoint on your server
-      axiosInstance
-        .put(
-          "user/logout",
-          {},
-          {
-            // Empty body since it's a logout request
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then(() => {
-          // Remove token and update UI
-          localStorage.removeItem("authToken");
-          this.isLoggedIn = false;
-          this.user = null;
-          // Redirect to login page
-          this.$router.push("/login");
-        })
-        .catch((error) => {
-          console.error("Failed to logout:", error);
-          // Optionally handle logout errors here
-          this.$router.push("/login"); // Redirect even if there is an error
-        });
-    },
-
-    // delete account
-    deleteAcount() {
-      // Check if there is a token in localStorage
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        // Handle the case where there is no token
-        console.error("No authentication token found.");
-        this.$router.push("/");
-        return;
-      }
-      // Assuming you have a logout endpoint on your server
-      axiosInstance
-        .put(
-          "user/delete",
-          {},
-          {
-            // Empty body since it's a logout request
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then(() => {
-          // Remove token and update UI
-          localStorage.removeItem("authToken");
-          this.isLoggedIn = false;
-          this.user = null;
-          // Redirect to login page
-          this.$router.push("/");
-        })
-        .catch((error) => {
-          console.error("Failed to logout:", error);
-          // Optionally handle logout errors here
-          this.$router.push("/login"); // Redirect even if there is an error
-        });
-    },
-
     // error handling function
     HandleError(error) {
       if (error.response) {
@@ -312,6 +327,40 @@ export default {
         // Handle unexpected errors
         console.error("Error:", error.message);
         this.error = error.message || "An unexpected error occurred.";
+      }
+    },
+
+    toggleEdit() {
+      if (this.isEditing) {
+        // Save the changes
+        // this.updateUserProfile();
+      }
+      this.isEditing = !this.isEditing;
+    },
+
+    async updateUserProfile() {
+      try {
+        const token = localStorage.getItem("authToken");
+        await axiosInstance.put(
+          "user/update",
+          {
+            name: this.name,
+            email: this.email,
+            age: this.age,
+            weight: this.weight,
+            height: this.height,
+            exercises: this.exercises,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert("Profile updated successfully");
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+        alert("Failed to update profile");
       }
     },
   },

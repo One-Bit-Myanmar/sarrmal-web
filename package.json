@@ -14,6 +14,7 @@
     "bootstrap-vue": "^2.23.1",
     "boxicons": "^2.1.4",
     "core-js": "^3.8.3",
+    "flowbite": "^2.5.1",
     "http-proxy-middleware": "^3.0.0",
     "marked": "^14.1.0",
     "tagify": "^0.1.1",

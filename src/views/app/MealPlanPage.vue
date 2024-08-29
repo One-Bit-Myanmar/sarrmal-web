@@ -141,7 +141,17 @@
             :alt="food.name"
             class="w-full h-32 object-cover mb-2 rounded-md"
           />
+          <router-link
+              :to="{
+                name: 'detail',
+                params: {
+                  food_id: food._id,
+                  where: 'temp_food',
+                },
+              }"
+            >
           <p class="font-semibold text-lg">{{ food.name }}</p>
+          </router-link>
           <p class="text-gray-600">Calories: {{ food.calories }} g</p>
         </div>
       </div>
@@ -172,6 +182,8 @@ export default {
       errorMessage: "",
       isgenerating: false,
       isconfirming: false,
+      FoodType: null,
+      preferredFood: null,
     };
   },
 
@@ -327,6 +339,8 @@ export default {
             }
           );
           console.log("generated", response.data);
+          // get the meal again
+          await this.getMeals();
           this.isgenerating = false;
           this.loading = false;
         } catch (error) {

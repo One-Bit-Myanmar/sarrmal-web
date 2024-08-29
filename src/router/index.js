@@ -66,7 +66,7 @@ const routes = [
     meta: { requiresAuth: true }, // Add a meta field to mark this route as requiring authentication
   },
   {
-    path: "/detail",
+    path: "/detail/:where/:food_id",
     name: "detail",
     component: MealDetailPage,
     meta: { requiresAuth: true }, // Add a meta field to mark this route as requiring authentication

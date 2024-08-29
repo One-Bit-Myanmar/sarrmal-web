@@ -66,7 +66,17 @@
         />
         <div class="flex items-center justify-between w-full">
           <div class="flex flex-col items-start justify-start">
+            <router-link
+              :to="{
+                name: 'detail',
+                params: {
+                  food_id: food._id,
+                  where: 'fix_food',
+                },
+              }"
+            >
             <p class="font-semibold text-lg">{{ food.name }}</p>
+            </router-link>
             <p class="text-gray-600">Calories: {{ food.calories }} g</p>
           </div>
           <button @click="tick(food._id)" class="bg-sky-300 text-slate-100 px-2 py-1 rounded-lg">

@@ -169,14 +169,15 @@ export default {
     // send message function
     async sendMessage() {
       this.temp_message = this.newMessage;
-      if (this.newMessage.trim() !== "") {
+      this.newMessage = "";
+      if (this.temp_message.trim() !== "") {
         try {
           const token = localStorage.getItem("authToken");
           // Send the user's message to the AI chat API
           const response = await axiosInstance.post(
             "ai/chat",
             {
-              message: this.newMessage,
+              message: this.temp_message,
             },
             {
               headers: {
@@ -185,7 +186,7 @@ export default {
             }
           );
           // Add the user's message
-          this.messages.push({ text: this.newMessage, sender: "user" });
+          this.messages.push({ text: this.temp_message, sender: "user" });
           // Add the AI's response
           this.messages.push({
             text: response.data.data || "I'm an AI, how can I help you?",
@@ -196,6 +197,7 @@ export default {
           this.HandleError(error);
         }
         // Clear the input field
+        this.temp_message = "";
         this.newMessage = "";
       }
     },

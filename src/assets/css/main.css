@@ -6,6 +6,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @import 'flowbite/dist/flowbite.css'; */
+/* Import Flowbite CSS */
+
 .poppins-thin {
     font-family: "Poppins", sans-serif;
     font-weight: 100;

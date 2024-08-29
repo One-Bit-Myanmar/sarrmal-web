@@ -34,7 +34,7 @@ export default {
   name: "WelcomePage",
   data() {
     return {
-      logo: require("@/assets/sarrmal-logo.png"),
+      logo: require("@/assets/logo.png"),
       isLoggedIn: false,
       user: null,
     };

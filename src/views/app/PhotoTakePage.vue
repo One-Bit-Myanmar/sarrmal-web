@@ -118,8 +118,8 @@
       class="flex px-10 py-8 items-center justify-center bg-white rounded-lg shadow"
     >
       <!-- the result show session  -->
-      <div
-        class="flex flex-col items-start justify-start w-full"
+      <form
+        class="flex flex-col items-start justify-start w-3/2"
         v-if="food_info"
       >
         <h3 class="text-slate-700 poppins-semibold mb-3 text-2xl">Result</h3>
@@ -175,7 +175,7 @@
             </li>
           </ul>
         </div>
-      </div>
+      </form>
       <!-- else if  -->
       <div
         class="flex flex-col items-center justify-center w-full"
@@ -277,7 +277,7 @@ export default {
       this.food_info = null;
       this.isCameraOpen = false;
       this.isAnalyzeButtonDisabled = true;
-      this.photo = true;
+      this.photo = null;
       // Trigger the file input to open the file picker
       this.$refs.fileInput.click();
     },
@@ -298,6 +298,7 @@ export default {
     // analyze photo method
     async analyzePhoto() {
       this.isloading = true;
+      console.log(this.file);
       if (this.file) {
         try {
           const token = localStorage.getItem("authToken");

@@ -130,7 +130,17 @@
             :alt="food.name"
             class="w-full h-32 object-cover mb-2"
           />
+          <router-link
+              :to="{
+                name: 'detail',
+                params: {
+                  food_id: food._id,
+                  where: 'temp_food',
+                },
+              }"
+            >
           <p class="font-semibold">{{ food.name }}</p>
+          </router-link>
           <p>Calories: {{ food.calories }} g</p>
         </div>
       </div>

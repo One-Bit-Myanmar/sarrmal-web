@@ -1,9 +1,9 @@
 <template>
-  <div class="container">
+  <div class="container h-screen flex flex-col">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
-        Welcome to SarrMal, make your life style healthy!
+        Welcome to SarrMal, make your lifestyle healthy!
       </h1>
       <div
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
@@ -24,7 +24,44 @@
     </div>
     <!-- end of header  -->
 
-    
+    <!-- main section  -->
+    <!-- Loading Page -->
+    <LoadingPage v-if="loading" />
+
+    <!-- Error Page -->
+    <ErrorPage v-if="error" :message="errorMessage" />
+
+    <div v-else>
+      <div v-for="(foods, date) in groupedData" :key="date" class="mb-8">
+        <h2 class="text-lg font-semibold mb-2">{{ date }}</h2>
+        <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
+          <div
+            v-for="food in foods"
+            :key="food._id"
+            class="flex flex-col items-center p-4 border rounded-md shadow-md"
+          >
+            <img
+              :src="food.foodDetails.data.image_url"
+              :alt="food.foodDetails.data.name"
+              class="w-full h-32 object-cover mb-2"
+            />
+            <router-link
+              :to="{
+                name: 'detail',
+                params: {
+                  food_id: food.foodDetails.data._id,
+                  where: 'fix_food',
+                },
+              }"
+            >
+              <p class="font-semibold">{{ food.foodDetails.data.name }}</p>
+            </router-link>
+            <p>Calories: {{ food.foodDetails.data.calories }} g</p>
+            <!-- Add other food details as needed -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -44,9 +81,12 @@ export default {
     return {
       isLoggedIn: false,
       user: null,
-      temp_foods: null,
+      temp_foods: [], // Array to hold flattened and enriched data
       loading: true,
       error: false,
+      food_ids: [],
+      rawData: null, // The original data from the API
+      groupedData: {}, // The grouped data by created_at
     };
   },
 
@@ -58,7 +98,7 @@ export default {
     // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
       try {
-        // addition fetching
+        await this.get_meal_history();
       } catch (error) {
         this.error = true;
       } finally {
@@ -70,15 +110,11 @@ export default {
   },
 
   methods: {
-    // this will work first when page is ready
-    // this will check authentication method
     async checkAuthentication() {
-      // Check if there is a token in localStorage
       const token = localStorage.getItem("authToken");
       if (token) {
         this.isLoggedIn = true;
         try {
-          // Fetch user data
           const response = await axiosInstance.get("user/me", {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -88,115 +124,101 @@ export default {
           console.log(this.user);
         } catch (error) {
           console.error("Failed to fetch user data:", error);
-          this.isLoggedIn = false; // Set logged in status to false if fetching fails
+          this.isLoggedIn = false;
           this.$router.push("/login");
         }
       } else {
-        this.isLoggedIn = false; // No token means not logged in
+        this.isLoggedIn = false;
         this.$router.push("/login");
       }
     },
 
-    // logout account
-    logout() {
-      // Check if there is a token in localStorage
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        // Handle the case where there is no token
-        console.error("No authentication token found.");
-        this.$router.push("/login");
-        return;
-      }
-      // Assuming you have a logout endpoint on your server
-      axiosInstance
-        .put(
-          "user/logout",
-          {},
-          {
-            // Empty body since it's a logout request
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then(() => {
-          // Remove token and update UI
-          localStorage.removeItem("authToken");
-          this.isLoggedIn = false;
-          this.user = null;
-          // Redirect to login page
-          this.$router.push("/login");
-        })
-        .catch((error) => {
-          console.error("Failed to logout:", error);
-          // Optionally handle logout errors here
-          this.$router.push("/login"); // Redirect even if there is an error
+    async get_meal_history() {
+      try {
+        const token = localStorage.getItem("authToken");
+        // Fetch the meal history data
+        const response = await axiosInstance.get("food-history/get", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+        this.rawData = response.data;
+        await this.returnGroupedData();
+        console.log(this.groupedData);
+      } catch (error) {
+        this.HandleError(error);
+      }
     },
 
-    // delete account
-    deleteAcount() {
-      // Check if there is a token in localStorage
+    async returnGroupedData() {
       const token = localStorage.getItem("authToken");
-      if (!token) {
-        // Handle the case where there is no token
-        console.error("No authentication token found.");
-        this.$router.push("/");
-        return;
-      }
-      // Assuming you have a logout endpoint on your server
-      axiosInstance
-        .put(
-          "user/delete",
-          {},
-          {
-            // Empty body since it's a logout request
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      const entries = Object.values(this.rawData.data);
+      const groupedData = entries.reduce((acc, entry) => {
+        if (entry.created_at) {
+          const date = entry.created_at.split("T")[0]; // Assuming 'created_at' is in ISO format
+          if (!acc[date]) {
+            acc[date] = [];
           }
-        )
-        .then(() => {
-          // Remove token and update UI
-          localStorage.removeItem("authToken");
-          this.isLoggedIn = false;
-          this.user = null;
-          // Redirect to login page
-          this.$router.push("/");
-        })
-        .catch((error) => {
-          console.error("Failed to logout:", error);
-          // Optionally handle logout errors here
-          this.$router.push("/login"); // Redirect even if there is an error
-        });
+          acc[date].push(entry);
+        }
+        return acc;
+      }, {});
+
+      // Fetch food details and update groupedData
+      for (const date in groupedData) {
+        const foods = await Promise.all(
+          groupedData[date].map(async (entry) => {
+            try {
+              const foodResponse = await axiosInstance.get(
+                `food/get/${entry.food_id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              return {
+                ...entry,
+                foodDetails: foodResponse.data,
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching food with ID ${entry.food_id}:`,
+                error
+              );
+              return entry; // Return the entry without food details if there's an error
+            }
+          })
+        );
+        groupedData[date] = foods;
+      }
+
+      this.groupedData = groupedData;
+      console.log("gp", this.groupedData);
+      // Flatten grouped data to update meal history (temp_foods)
+      this.temp_foods = Object.values(groupedData).flat();
+      console.log("temp foods: ", this.temp_foods);
     },
 
-    // error handling function
     HandleError(error) {
       if (error.response) {
-        // Check for specific status codes
         if (error.response.status === 401) {
-          // Handle 401 Unauthorized error
           console.error("Login failed: Incorrect username or password.");
           this.error = "Login failed: Incorrect username or password.";
         } else if (error.response.status === 404) {
-          // Handle 404 Not Found error
           console.error("The requested resource was not found.");
           this.error =
             "The requested resource was not found. Please check the URL.";
         } else {
-          // Handle other error responses from the server
           console.error("Error Response:", error.response.data);
           this.error =
             error.response.data.detail ||
             "An error occurred. Please try again.";
         }
       } else if (error.request) {
-        // Handle network errors
         console.error("Network Error:", error.request);
         this.error = "Network error. Please check your connection.";
       } else {
-        // Handle unexpected errors
         console.error("Error:", error.message);
         this.error = error.message || "An unexpected error occurred.";
       }
