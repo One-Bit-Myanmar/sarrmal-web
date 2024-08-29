@@ -9,9 +9,7 @@
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-14"
       >
         <!-- Optionally show user info -->
-        <div
-          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
-        >
+        <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
           <p>Let's take snap photo XD.</p>
         </div>
         <!-- back button  -->
@@ -28,130 +26,161 @@
 
     <!-- rest of buttons start  -->
     <div class="flex items-center justify-center mb-10 gap-6">
-        <button @click="openCamera" class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl">
-          Take Photo
-        </button>
-        <button @click="openFilePicker" class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl">
-          Upload Photo
-        </button>
+      <button
+        @click="openCamera"
+        class="text-slate-700 bg-slate-200 px-6 py-4 rounded-lg text-xl"
+      >
+        Take Photo
+      </button>
+      <button
+        @click="openFilePicker"
+        class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl"
+      >
+        Upload Photo
+      </button>
     </div>
     <!-- end of the rest of buttons  -->
 
     <div class="container mx-auto p-4">
-    <!-- Photo Preview -->
-    <div v-if="photo" class="photo-preview flex flex-col items-center mb-4">
-      <h3 class="text-xl font-semibold mb-2">Preview:</h3>
-      <img :src="photo" alt="Selected Photo" class="w-3/5 h-auto rounded-lg shadow-md" />
-    </div>
+      <!-- Photo Preview -->
+      <div v-if="photo" class="photo-preview flex flex-col items-center mb-4">
+        <h3 class="text-xl font-semibold mb-2">Preview:</h3>
+        <img
+          :src="photo"
+          alt="Selected Photo"
+          class="w-3/5 h-auto rounded-lg shadow-md"
+        />
+      </div>
 
-    <!-- Hidden File Input for Uploading -->
-    <input
-      type="file"
-      ref="fileInput"
-      @change="handleFileUpload"
-      accept="image/*"
-      class="hidden"
-    />
+      <!-- Hidden File Input for Uploading -->
+      <input
+        type="file"
+        ref="fileInput"
+        @change="handleFileUpload"
+        accept="image/*"
+        class="hidden"
+      />
 
-    <!-- Hidden Video Element for Camera Capture -->
-    <div v-if="isCameraOpen" class="flex justify-center mb-4">
-      <video ref="video" autoplay playsinline class="w-3/5 h-auto rounded-lg shadow-md" style="display: none;"></video>
-    </div>
+      <!-- Hidden Video Element for Camera Capture -->
+      <div v-if="isCameraOpen" class="flex justify-center mb-4">
+        <video
+          ref="video"
+          autoplay
+          playsinline
+          class="w-3/5 h-auto rounded-lg shadow-md"
+        ></video>
+      </div>
 
-    <!-- Capture Photo Button (Visible only when using the camera) -->
-    <div class="flex items-center justify-center w-full">
-      <button 
-      v-if="isCameraOpen"
-      @click="capturePhoto"
-      class="bg-sky-700 text-slate-50 px-4 py-2 rounded-lg shadow-lg hover:bg-sky-600"
-    >
-      Capture Photo
-    </button>
-  </div>
+      <!-- Capture Photo Button (Visible only when using the camera) -->
+      <div class="flex items-center justify-center w-full">
+        <button
+          v-if="isCameraOpen"
+          @click="capturePhoto"
+          class="bg-sky-700 text-slate-50 px-4 py-2 rounded-lg shadow-lg hover:bg-sky-600"
+        >
+          Capture Photo
+        </button>
+      </div>
     </div>
 
     <div class="flex items-center justify-center w-full">
       <button
-      v-if="photo"
-      class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl"
-      @click="analyzePhoto"
-      :disabled="isAnalyzeButtonDisabled"
-    >
-      Analyze
-    </button>
+        v-if="photo"
+        class="text-slate-50 bg-sky-700 px-6 py-4 rounded-lg text-xl"
+        @click="analyzePhoto"
+        :disabled="isAnalyzeButtonDisabled"
+      >
+        <div v-if="isloading">
+          <i class="bx bx-loader-alt animate-spin mr-2"></i>
+          Analyzing...
+        </div>
+        <div v-else>Analyze</div>
+      </button>
     </div>
 
     <!-- add to meal plan button  -->
     <div class="flex items-center justify-center w-full">
-    <button
-      v-if="addToMealPlan"
-      class="bg-slate-200 rounded-lg text-sky-700 capitalize font-semibold"
-      @click="addToMealPlanner"
-      :disabled="isAddButtonDisabled"
-    >
-      Add to meal plan
-    </button>
+      <button
+        v-if="addToMealPlan"
+        class="bg-slate-200 rounded-lg text-sky-700 capitalize font-semibold"
+        @click="addToMealPlanner"
+        :disabled="isAddButtonDisabled"
+      >
+        <div v-if="isadding">
+          <i class="bx bx-loader-alt animate-spin mr-2"></i>
+          Transferring to your meal plan
+        </div>
+        <div v-else>Add to Meal Plan</div>
+      </button>
     </div>
 
-    <div class="flex px-10 py-8 items-center justify-center bg-white rounded-lg shadow">
-      <!-- <div class="" v-if="food_info">
-          <h3>Result:</h3>
-          <p>name : {{ food_info.name }}</p>
-          <p>category : {{ food_info.category }}</p>
-          <p>How to cook : {{ food_info.how_to_cook }}</p>
-          <p>meal time : {{ food_info.meal_time }}</p>
-          <p>Ingredient: 
-              <ul>
-                  <li v-for="(ingredient, index) in food_info.ingredients" :key="index">
-                      {{ ingredient }}
-                  </li>
-              </ul>
-          </p>
-      </div> -->
-
+    <div
+      class="flex px-10 py-8 items-center justify-center bg-white rounded-lg shadow"
+    >
       <!-- the result show session  -->
-      <div class="flex flex-col items-start justify-start w-full" v-if="food_info">
-          <h3 class="text-slate-700 poppins-semibold mb-3 text-2xl">Result</h3>
-          <div class="flex flex-col items-start justify-start mb-5">
-            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> name </p>
-            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
-              {{ food_info.name }}
-            </p>
-          </div>
-          
-          <div class="flex flex-col items-start justify-start mb-5">
-            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> Category </p>
-            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
-              {{ food_info.category }}
-            </p>
-          </div>
+      <div
+        class="flex flex-col items-start justify-start w-full"
+        v-if="food_info"
+      >
+        <h3 class="text-slate-700 poppins-semibold mb-3 text-2xl">Result</h3>
+        <div class="flex flex-col items-start justify-start mb-5">
+          <p class="mb-2 text-sky-700 capitalize poppins-semibold">name</p>
+          <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+            {{ food_info.name }}
+          </p>
+        </div>
 
-          <div class="flex flex-col items-start justify-start mb-5">
-            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> How to cook </p>
-            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
-             {{ food_info.how_to_cook }}
-            </p>
-          </div>
+        <div class="flex flex-col items-start justify-start mb-5">
+          <p class="mb-2 text-sky-700 capitalize poppins-semibold">
+            Calories Amount
+          </p>
+          <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+            {{ food_info.calories }} Calories
+          </p>
+        </div>
 
-          <div class="flex flex-col items-start justify-start mb-5">
-            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> Meal time </p>
-            <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
-              {{ food_info.meal_time }}
-            </p>
-          </div>
+        <div class="flex flex-col items-start justify-start mb-5">
+          <p class="mb-2 text-sky-700 capitalize poppins-semibold">Category</p>
+          <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+            {{ food_info.category }}
+          </p>
+        </div>
 
-          <div class="flex flex-col items-start justify-start mb-5">
-            <p class="mb-2 text-sky-700 capitalize poppins-semibold"> Ingredients </p>
-            <ul class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
-              <li v-for="(ingredient, index) in food_info.ingredients" :key="index">
-                {{ ingredient }}
-              </li>
-            </ul>
-          </div>
+        <div class="flex flex-col items-start justify-start mb-5">
+          <p class="mb-2 text-sky-700 capitalize poppins-semibold">
+            How to cook
+          </p>
+          <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+            {{ food_info.how_to_cook }}
+          </p>
+        </div>
 
+        <div class="flex flex-col items-start justify-start mb-5">
+          <p class="mb-2 text-sky-700 capitalize poppins-semibold">Meal time</p>
+          <p class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+            {{ food_info.meal_time }}
+          </p>
+        </div>
+
+        <div class="flex flex-col items-start justify-start mb-5">
+          <p class="mb-2 text-sky-700 capitalize poppins-semibold">
+            Ingredients
+          </p>
+          <ul class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700">
+            <li
+              v-for="(ingredient, index) in food_info.ingredients"
+              :key="index"
+            >
+              {{ ingredient }}
+            </li>
+          </ul>
+        </div>
       </div>
       <!-- else if  -->
-      <div class="flex flex-col items-center justify-center w-full" v-else-if="food_error">
+      <div
+        class="flex flex-col items-center justify-center w-full"
+        v-else-if="food_error"
+      >
         <h1 class="text-yellow-500 text-center">{{ food_error }}</h1>
       </div>
       <!-- else  -->
@@ -159,9 +188,6 @@
         <h1 class="text-slate-500 text-center">the result will show here.</h1>
       </div>
     </div>
-
-
-
   </div>
 </template>
 
@@ -179,6 +205,8 @@ export default {
       addToMealPlan: false, // Flag to track whether the user wants to add to meal plan
       isAddButtonDisabled: false, // control the add button to disable
       isAnalyzeButtonDisabled: true,
+      isloading: false,
+      isadding: false,
     };
   },
 
@@ -230,16 +258,26 @@ export default {
 
     // open camera function to pick realtime photo
     openCamera() {
+      console.log("camera opened");
       // Show video element and trigger camera access
       this.isCameraOpen = true;
       this.isAnalyzeButtonDisabled = true;
       this.photo = null;
-      this.$refs.video.style.display = "block";
+      this.addToMealPlan = false;
+      this.food_info = null;
+      this.food_error = null;
+      // this.$refs.video.style.display = "block";
       this.startCamera();
     },
 
     // open file picker to pick photo from device
     openFilePicker() {
+      this.addToMealPlan = false;
+      this.food_error = null;
+      this.food_info = null;
+      this.isCameraOpen = false;
+      this.isAnalyzeButtonDisabled = true;
+      this.photo = true;
       // Trigger the file input to open the file picker
       this.$refs.fileInput.click();
     },
@@ -259,7 +297,7 @@ export default {
 
     // analyze photo method
     async analyzePhoto() {
-      console.log(this.file);
+      this.isloading = true;
       if (this.file) {
         try {
           const token = localStorage.getItem("authToken");
@@ -274,46 +312,52 @@ export default {
                 "Content-Type": "multipart/form-data",
               },
             }
-            );
-          if(response.data.message){
-            this.food_error = response.data.message
-          }else{
-            this.food_info = response.data
-          }
+          );
           // Handle the API response
-          console.log(response.data);
           if (!response.data.message) {
             this.addToMealPlan = true;
+            this.food_info = response.data;
+            this.food_error = null;
+          } else {
+            this.food_error = response.data.message;
+            this.food_info = null;
           }
           this.isAnalyzeButtonDisabled = true;
+          this.isloading = false;
+          // debug
+          console.log(response);
+          console.log("food error", this.food_error);
         } catch (error) {
           this.HandleError(error);
+          this.isloading = false;
         }
       }
     },
 
     // add to meal planner function
     async addToMealPlanner() {
-        if (this.food_info) {
-            try {
-            const token = localStorage.getItem("authToken");
-            const response = await axiosInstance.post(
+      if (this.food_info) {
+        this.isadding = true;
+        try {
+          const token = localStorage.getItem("authToken");
+          const response = await axiosInstance.post(
             "food/add/generated_calories",
             {},
             {
-                headers: {
+              headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "multipart/form-data",
-                },
+              },
             }
-            );
-            this.food_info = response.data;
-            if (response.data) {
-                this.isAddButtonDisabled = true; // Disable the button
-                this.$router.push('/meals/confirmed'); // go to the meal planner
-            }
+          );
+          this.food_info = response.data;
+          if (response.data) {
+            this.isAddButtonDisabled = true; // Disable the button
+            this.$router.push("/meals/confirmed"); // go to the meal planner
+          }
         } catch (error) {
-            this.HandleError(error);
+          this.isadding = false;
+          this.HandleError(error);
         }
       }
     },
