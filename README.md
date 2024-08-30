@@ -1,5 +1,21 @@
 # sarrmal-app-web
 
+## Clone the repo
+```
+git clone https://github.com/One-Bit-Myanmar/sarrmal-web.git
+```
+
+## Open project
+```
+cd sarrmal-web
+cp .env.example .env
+```
+
+## Edit env 
+```
+VUE_APP_API_BASE_URL=https://www.onebitmyanmar.site/api
+```
+
 ## Project setup
 ```
 npm install
