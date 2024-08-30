@@ -90,6 +90,26 @@
       </div>
     </div>
 
+    <!--  food type option -->
+    <div
+      class="flex flex-col text-center items-center justify-center mb-10 poppins-regular"
+    >
+      <div class="w-full md:w-1/2">
+        <h1 class="text-slate-700 text-lg capitalize mb-4 poppins-semibold">
+          Enter your sugar level
+        </h1>
+        <input
+          type="number"
+          v-model="sugarLevel"
+          name=""
+          id=""
+          class="w-full px-4 py-2 rounded-lg shadow"
+          min="0"
+          @input="checkMinValue"
+        />
+      </div>
+    </div>
+
     <!-- rest of buttons start  -->
     <div class="flex items-center justify-center mb-10 gap-6">
       <button
@@ -138,7 +158,7 @@
             :alt="food.name"
             class="w-full h-32 object-cover mb-2 rounded-md"
           />
-          
+
           <router-link
             :to="{
               name: 'detail',
@@ -184,6 +204,7 @@ export default {
       isconfirming: false,
       FoodType: null,
       preferredFood: null,
+      sugarLevel: 0,
     };
   },
 
@@ -212,6 +233,11 @@ export default {
     // onImageError(event) {
     //   event.target.src = require("@/assets/image_not_found.jpg");
     // },
+    checkMinValue() {
+      if (this.sugarLevel < 0) {
+        this.sugarLevel = 0;
+      }
+    },
 
     // this will check authentication method
     async checkAuthentication() {
@@ -335,6 +361,7 @@ export default {
               params: {
                 preferred_food: this.preferredFood,
                 food_type: this.foodType,
+                sugar_level: parseInt(this.sugarLevel)
               },
               headers: {
                 Authorization: `Bearer ${token}`,

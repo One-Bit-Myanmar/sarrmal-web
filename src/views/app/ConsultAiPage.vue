@@ -1,8 +1,8 @@
 <template>
-  <div class="container flex flex-col bg-yellow-100"
-  :class="
-    loading ? 'h-screen' : 'h-auto'
-  ">
+  <div
+    class="container flex flex-col bg-yellow-100"
+    :class="loading ? 'h-screen' : 'h-auto'"
+  >
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -42,6 +42,11 @@
 
           <div v-else>
             <!-- Messages -->
+
+            <div v-if="isChatEmpty"></div>
+              <h1 class="text-slate-700 text-center mt-28 poppins-regular">
+                Empty Chat
+              </h1>
             <div
               v-for="(message, index) in messages"
               :key="index"
@@ -109,6 +114,7 @@ export default {
       error: false,
       temp_message: null,
       errorMessage: "",
+      isChatEmpty: false,
     };
   },
 
@@ -230,6 +236,13 @@ export default {
             date: chat.date, // Optional: For displaying timestamp
           },
         ]);
+
+        if (chatArray.length === 0) {
+          this.isChatEmpty = true;
+        } else {
+          this.isChatEmpty = false;
+        }
+
       } catch (error) {
         this.HandleError(error);
       }
