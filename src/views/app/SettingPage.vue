@@ -10,7 +10,7 @@
       >
         <!-- Optionally show user info -->
         <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
-          <p>Personalize your profile</p>
+          <p>User Information</p>
         </div>
         <!-- back button  -->
         <router-link to="/main">
@@ -187,6 +187,7 @@
             Delete
           </button>
         </div>
+        
       </div>
     </div>
 

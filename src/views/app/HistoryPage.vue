@@ -40,8 +40,7 @@
       <!-- check meal plan is empty or not  -->
       <div v-if="count_history_foods">
         <h2
-          class="text-yellow-500 text-center w-full rounded-lg 
-          px-8 py-4 poppins-semibold"
+          class="text-yellow-500 text-center w-full rounded-lg px-8 py-4 poppins-semibold"
         >
           <i class="bx bx-sad text-4xl mt-3"></i> <br />
           <span class="">
@@ -77,7 +76,7 @@
                 },
               }"
             >
-              <p class="font-semibold text-center">
+              <p class="font-semibold text-center text-sky-700">
                 {{ food.foodDetails.data.name }}
               </p>
             </router-link>

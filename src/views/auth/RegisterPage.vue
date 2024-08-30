@@ -1,13 +1,13 @@
 <template>
-  <div style="" class="h-screen overflow-y-scroll">
-    <div class="p-6 bg-light rounded-lg shadow poppins-regular">
+  <div style="" class="h-screen overflow-y-scroll py-6 register-wrapper">
+    <div class="p-6 bg-light rounded-lg shadow poppins-regular bg-slate-50">
       <h1 class="mb-8 text-xl poppins-semibold text-sky-700">Register</h1>
       <form
         @submit.prevent="handleSubmit"
         class="flex flex-col items-start justify-center gap-6"
         :class="{
           'w-[350px]': !isSection2Visible,
-          'w-[600px]': isSection2Visible,
+          'w-[500px]': isSection2Visible,
         }"
       >
         <!-- Section 1: Email and Password -->
@@ -107,8 +107,10 @@
                   required
                   class="p-3 w-full border shadow rounded-md"
                 >
+                  <option value="">Choose</option>
                   <option value="1">Male</option>
                   <option value="0">Female</option>
+                  <option value="2">Other</option>
                 </select>
               </div>
               <div class="flex flex-row gap-6 w-full">
@@ -121,6 +123,7 @@
                     id="weight"
                     v-model="weight"
                     required
+                    placeholder="0"
                     class="p-3 w-full border shadow rounded-md"
                   />
                 </div>
@@ -133,6 +136,7 @@
                     id="height"
                     v-model="height"
                     required
+                    placeholder="0"
                     class="p-3 w-full border shadow rounded-md"
                   />
                 </div>
@@ -145,46 +149,35 @@
                 <label for="diseases" class="text-lg font-regular"
                   >Disease:</label
                 >
-                <ul
-                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
-                >
-                  <li
-                    v-for="disease in diseaseOptions"
-                    :key="disease.value"
-                    class="col-span-1"
+                <div class="relative">
+                  <select
+                    id="diseases"
+                    v-model="selectedDiseases"
+                    required
+                    class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg cursor-pointer text-slate-700 bg-white focus:outline-none focus:border-blue-600"
                   >
-                    <input
-                      type="checkbox"
-                      :id="disease.value"
+                    <option value="" selected>Choose</option>
+                    <option
+                      v-for="disease in diseaseOptions"
+                      :key="disease.value"
                       :value="disease.value"
-                      v-model="diseases"
-                      class="hidden peer"
-                    />
-                    <label
-                      :for="disease.value"
-                      class="inline-flex items-center justify-between w-auto px-2 py-2 text-slate-700 bg-white border-2 rounded-lg cursor-pointer border-gray-300 peer-checked:border-blue-600 peer-checked:text-sky-700 hover:bg-sky-100"
                     >
-                      <div class="block">
-                        <div class="w-auto font-semibold">
-                          {{ disease.label }}
-                        </div>
-                      </div>
-                    </label>
-                  </li>
-                </ul>
+                      {{ disease.label }}
+                    </option>
+                  </select>
+                </div>
               </div>
 
               <div class="flex flex-col gap-2 w-full">
                 <label for="diseases" class="text-lg font-regular"
-                  >Disease:</label
+                  >Allergies:</label
                 >
                 <ul
-                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
+                  class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-3"
                 >
                   <li
                     v-for="allergie in allergiesOptions"
                     :key="allergie.value"
-                    class="col-span-1"
                   >
                     <input
                       type="checkbox"
@@ -279,13 +272,11 @@ export default {
       isSection2Visible: false, // Controls visibility of the second section
       allergies: [],
       loading: false,
-      diseases: [],
+      selectedDiseases: "", // This will hold the selected disease value
       diseaseOptions: [
-        { value: "diabetes", label: "Diabetes" },
+        { value: "diabetes-type1", label: "Diabetes Type 1" },
+        { value: "diabetes-type2", label: "Diabetes Type 2" },
         { value: "hypertension", label: "Hypertension" },
-        { value: "celiac", label: "Celiac Disease" },
-        { value: "allergies", label: "Food Allergies" },
-        { value: "other", label: "Others" },
         { value: "none", label: "None" },
       ],
       allergiesOptions: [
@@ -308,7 +299,7 @@ export default {
       console.log("Selected diseases:", newValues);
     },
     allergies(newValues) {
-      console.log("Selected diseases:", newValues);
+      console.log("Selected allegries:", newValues);
     },
   },
 
@@ -337,7 +328,6 @@ export default {
 
     async handleSubmit() {
       // Clear any previous error message
-      this.loading = true;
       this.error = null;
       // Check if all required fields in section 2 are filled
       if (
@@ -345,39 +335,41 @@ export default {
         !this.gender ||
         !this.weight ||
         !this.height ||
-        !this.diseases ||
-        !this.allergies ||
+        !this.selectedDiseases ||
+        this.allergies.length === 0 ||
         !this.exercise ||
         !this.age
       ) {
         this.error = "Please fill in all required fields.";
         return;
-      }
-
-      try {
-        // Register new user
-        const response = await axiosInstance.post("user/register", {
-          username: this.name,
-          email: this.email,
-          password: this.password,
-          gender: parseInt(this.gender),
-          weight: parseFloat(this.weight),
-          height: parseFloat(this.height),
-          diseases: this.diseases,
-          allergies: this.allergies,
-          exercises: this.exercise,
-          disabled: false,
-          age: parseInt(this.age),
-        });
-        // store in localstorage or session
-        localStorage.setItem("authToken", response.data.access_token); // Adjust according to your response structure
-        localStorage.setItem("tokenType", response.data.token_type); // Adjust according to your response structure
-        // if success then go to main route
-        this.$router.push("/main");
-      } catch (error) {
-        // Handle registration error
-        this.HandleError(error);
-        this.loading = false;
+      } else {
+        console.log(this.allergies);
+        this.loading = true;
+        try {
+          // Register new user
+          const response = await axiosInstance.post("user/register", {
+            username: this.name,
+            email: this.email,
+            password: this.password,
+            gender: parseInt(this.gender),
+            weight: parseFloat(this.weight),
+            height: parseFloat(this.height),
+            diseases: [this.selectedDiseases],
+            allergies: this.allergies,
+            exercises: this.exercise,
+            disabled: false,
+            age: parseInt(this.age),
+          });
+          // store in localstorage or session
+          localStorage.setItem("authToken", response.data.access_token); // Adjust according to your response structure
+          localStorage.setItem("tokenType", response.data.token_type); // Adjust according to your response structure
+          // if success then go to main route
+          this.$router.push("/main");
+        } catch (error) {
+          // Handle registration error
+          this.HandleError(error);
+          this.loading = false;
+        }
       }
     },
 
@@ -400,4 +392,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.register-wrapper::-webkit-scrollbar {
+  display: none; /* Webkit browsers */
+}
+</style>

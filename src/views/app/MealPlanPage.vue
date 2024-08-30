@@ -83,14 +83,8 @@
           <option value="" disabled selected>Choose</option>
           <option value="Vegetarian">Vegetarian</option>
           <option value="Non-Vegetarian">Non-Vegetarian</option>
-          <option value="Healthy">Healthy</option>
-          <option value="Gym Rat">Gym Rat</option>
-          <option value="High-Calorie">High-Calorie</option>
-          <option value="High-Fibre">High-Fibre</option>
-          <option value="Low-sugar">Low-sugar</option>
-          <option value="High-Protein">High-Protein</option>
-          <option value="Balanced">Balanced</option>
-          <option value="Others">Others</option>
+          <option value="balanced">Balanced</option>
+          <option value="other">Other</option>
         </select>
       </div>
     </div>
