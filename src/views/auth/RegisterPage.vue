@@ -49,7 +49,7 @@
           </div>
 
           <div class="flex items-center justify-between w-full gap-4">
-            <router-link to="/register">
+            <router-link to="/">
               <div
                 class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"
               >
@@ -236,7 +236,7 @@
         </div>
 
         <div class="flex items-center justify-between w-full gap-4 px-5">
-          <router-link to="/">
+          <router-link to="/register">
             <div
               v-if="isSection2Visible"
               class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"

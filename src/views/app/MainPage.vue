@@ -1,12 +1,12 @@
 <template>
-  <div class="container flex flex-col bg-yellow-100"
-  :class="
-    loading ? 'h-screen' : 'h-auto'
-  ">
+  <div
+    class="container flex flex-col bg-yellow-100"
+    :class="loading ? 'h-screen' : 'h-auto'"
+  >
     <!-- header -->
     <div class="header">
-      <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
-        Welcome to SarrMal, make your life style healthy!
+      <h1 class="bg-green-200 p-3 rounded-lg text-green-800 poppins-semibold">
+        Welcome to SarrMal, make your life healthy!
       </h1>
       <div
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
@@ -14,7 +14,7 @@
         <!-- Optionally show user info -->
         <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
           <p>
-            Welcome,
+            Hello,
             <span class="text-sky-700" v-if="user">
               {{ user.username }}
             </span>
@@ -47,7 +47,7 @@
           <!-- Dropdown Menu -->
           <div
             v-if="isMenuOpen"
-            class="absolute top-12 right-0 w-48 bg-white shadow-lg rounded-md border border-gray-200 p-4"
+            class="absolute text-slate-700 top-12 right-0 w-48 bg-white shadow-lg rounded-md border border-gray-200 p-4"
           >
             <ul class="flex flex-col">
               <li>
@@ -87,9 +87,13 @@
                 <button
                   @click="logout"
                   v-if="isLoggedIn"
-                  class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                  class="w-full text-red-700 px-4 py-2 text-left hover:bg-red-100"
                 >
-                  Logout
+                  <div v-if="isloggingout">
+                    <i class="bx bx-loader-alt animate-spin mr-2"></i>
+                    logging out...
+                  </div>
+                  <div v-else>Logout</div>
                 </button>
               </li>
             </ul>
@@ -134,15 +138,17 @@
             class="w-full h-32 object-cover mb-2"
           />
           <router-link
-              :to="{
-                name: 'detail',
-                params: {
-                  food_id: food._id,
-                  where: 'temp_food',
-                },
-              }"
-            >
-          <p class="font-semibold text-sky-700 text-center">{{ food.name }}</p>
+            :to="{
+              name: 'detail',
+              params: {
+                food_id: food._id,
+                where: 'temp_food',
+              },
+            }"
+          >
+            <p class="font-semibold text-sky-700 text-center">
+              {{ food.name }}
+            </p>
           </router-link>
           <p>Calories: {{ food.calories }} g</p>
         </div>
@@ -172,6 +178,7 @@ export default {
       isMenuOpen: false,
       loading: true,
       error: false,
+      isloggingout: false,
     };
   },
 
@@ -255,7 +262,7 @@ export default {
     logout() {
       // Check if there is a token in localStorage
       const token = localStorage.getItem("authToken");
-
+      this.isloggingout = true;
       if (!token) {
         // Handle the case where there is no token
         console.error("No authentication token found.");

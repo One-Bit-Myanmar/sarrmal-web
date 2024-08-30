@@ -15,7 +15,7 @@
       >
         <!-- Optionally show user info -->
         <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
-          <p>How do you feel about today?</p>
+          Be Happy and Healthy 
         </div>
         <!-- back button  -->
         <router-link to="/main">
@@ -53,8 +53,17 @@
 
     <div v-else>
       <!-- if meal is empty  -->
+      <!-- check meal plan is empty or not  -->
+      <div v-if="count_temp_foods">
+        <h2 class=" text-yellow-500 text-center w-full 
+         rounded-lg  px-8 py-4 poppins-regular">
+          <i class="bx bx-happy text-4xl mt-3"></i> <br>
+          <span class="">
+            Create Healthy Meal Sets!! <br> Just click <b>"Get new meal set"</b> button
+          </span>
+        </h2>
+      </div>
 
-      <!-- else  -->
       <div
         class="grid grid-cols-1 poppins-regular sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
       >
@@ -81,7 +90,9 @@
                   },
                 }"
               >
-                <p class="font-semibold text-lg text-center text-sky-700">{{ food.name }}</p>
+                <p class="font-semibold text-lg text-center text-sky-700">
+                  {{ food.name }}
+                </p>
               </router-link>
               <p class="text-gray-600">Calories: {{ food.calories }} g</p>
             </div>
@@ -117,6 +128,7 @@ export default {
       temp_foods: null,
       loading: true,
       error: false,
+      count_temp_foods: null,
     };
   },
 
@@ -124,11 +136,13 @@ export default {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
   },
+
+
   async mounted() {
     // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
       try {
-        await this.getMeals();
+        await this.getMeals()
       } catch (error) {
         this.error = true;
       } finally {
@@ -181,6 +195,12 @@ export default {
         // Loop through the object keys and push values into temp_foods
         this.temp_foods = response.data;
         this.temp_foods = this.temp_foods["data"];
+        if (Object.keys(this.temp_foods).length === 0) {
+            console.log("count", this.count_temp_foods);
+            this.count_temp_foods = true;
+          } else {
+            this.count_temp_foods = false;
+          }
         // Convert object to an array of [key, value] pairs
         this.temp_foods = Object.entries(this.temp_foods);
         // Convert the sliced array back to an object
@@ -190,7 +210,6 @@ export default {
         this.HandleError(error);
       }
     },
-
     // error handling function
     HandleError(error) {
       if (error.response) {

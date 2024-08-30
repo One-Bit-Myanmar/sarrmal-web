@@ -1,12 +1,14 @@
 <template>
-  <div class="container flex flex-col bg-yellow-100"
-  :class="
+  <div
+    class="container flex flex-col bg-yellow-100"
+    :class="
       loading || Object.keys(temp_foods).length === 0 ? 'h-screen' : 'h-auto'
-    ">
+    "
+  >
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
-        Welcome to SarrMal, make your lifestyle healthy!
+        Be Happy and Healthy
       </h1>
       <div
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
@@ -35,13 +37,31 @@
     <ErrorPage v-if="error" :message="errorMessage" />
 
     <div v-else>
-      <div v-for="(foods, date) in groupedData" :key="date" class="mb-8 poppins-regular">
+      <!-- check meal plan is empty or not  -->
+      <div v-if="count_history_foods">
+        <h2
+          class="text-yellow-500 text-center w-full rounded-lg 
+          px-8 py-4 poppins-semibold"
+        >
+          <i class="bx bx-sad text-4xl mt-3"></i> <br />
+          <span class="">
+            Don't eat healthy food!! <br />
+            Just click <b>"Get new meal set"</b> button for healthy meal sets
+          </span>
+        </h2>
+      </div>
+
+      <div
+        v-for="(foods, date) in groupedData"
+        :key="date"
+        class="mb-8 poppins-regular"
+      >
         <h2 class="text-lg font-semibold mb-2">{{ date }}</h2>
         <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
           <div
             v-for="food in foods"
             :key="food._id"
-            class="flex flex-col items-center p-4 border rounded-md shadow-md"
+            class="flex flex-col items-center bg-slate-50 p-4 border rounded-md shadow-md"
           >
             <img
               :src="food.foodDetails.data.image_url"
@@ -57,7 +77,9 @@
                 },
               }"
             >
-              <p class="font-semibold text-center">{{ food.foodDetails.data.name }}</p>
+              <p class="font-semibold text-center">
+                {{ food.foodDetails.data.name }}
+              </p>
             </router-link>
             <p>Calories: {{ food.foodDetails.data.calories }} g</p>
             <!-- Add other food details as needed -->
@@ -84,12 +106,13 @@ export default {
     return {
       isLoggedIn: false,
       user: null,
-      temp_foods: [], // Array to hold flattened and enriched data
       loading: true,
       error: false,
       food_ids: [],
+      temp_foods: [],
       rawData: null, // The original data from the API
       groupedData: {}, // The grouped data by created_at
+      count_history_foods: null,
     };
   },
 
@@ -146,6 +169,13 @@ export default {
           },
         });
         this.rawData = response.data;
+        console.log("raw data", this.rawData);
+        if (Object.keys(this.rawData.data).length === 0) {
+          this.count_history_foods = true;
+        } else {
+          this.count_history_foods = false;
+        }
+        console.log("count", this.count_rawData);
         await this.returnGroupedData();
         console.log(this.groupedData);
       } catch (error) {
@@ -203,6 +233,7 @@ export default {
       console.log("temp foods: ", this.temp_foods);
     },
 
+    // handle error
     HandleError(error) {
       if (error.response) {
         if (error.response.status === 401) {
