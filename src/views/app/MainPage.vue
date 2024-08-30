@@ -162,6 +162,7 @@
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
 import LoadingPage from "@/components/LoadingPage.vue";
 import ErrorPage from "@/components/ErrorPage.vue";
+import defaultImage from "@/assets/image_not_found.jpg";
 
 export default {
   name: "MainPage",
@@ -178,7 +179,8 @@ export default {
       isMenuOpen: false,
       loading: true,
       error: false,
-      isloggingout: false,
+      isloggingout: false, 
+      backupSrc: defaultImage,
     };
   },
 
@@ -186,6 +188,8 @@ export default {
     // Check if user is logged in when the component is created
     await this.checkAuthentication();
   },
+
+  
   async mounted() {
     // Fetch meals if the user is logged in
     if (this.isLoggedIn) {

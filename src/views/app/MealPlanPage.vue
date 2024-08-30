@@ -1,7 +1,8 @@
 <template>
-  <div class="container flex flex-col bg-yellow-100" :class="
-    loading ? 'h-screen' : 'h-auto'
-  ">
+  <div
+    class="container flex flex-col bg-yellow-100"
+    :class="loading ? 'h-screen' : 'h-auto'"
+  >
     <!-- Error Message Box -->
     <div
       v-if="showError"
@@ -137,16 +138,19 @@
             :alt="food.name"
             class="w-full h-32 object-cover mb-2 rounded-md"
           />
+          
           <router-link
-              :to="{
-                name: 'detail',
-                params: {
-                  food_id: food._id,
-                  where: 'temp_food',
-                },
-              }"
-            >
-          <p class="font-semibold text-lg text-center text-sky-700">{{ food.name }}</p>
+            :to="{
+              name: 'detail',
+              params: {
+                food_id: food._id,
+                where: 'temp_food',
+              },
+            }"
+          >
+            <p class="font-semibold text-lg text-center text-sky-700">
+              {{ food.name }}
+            </p>
           </router-link>
           <p class="text-gray-600">Calories: {{ food.calories }} g</p>
         </div>
@@ -205,6 +209,9 @@ export default {
 
   methods: {
     // this will work first when page is ready
+    // onImageError(event) {
+    //   event.target.src = require("@/assets/image_not_found.jpg");
+    // },
 
     // this will check authentication method
     async checkAuthentication() {

@@ -15,7 +15,7 @@
       >
         <!-- Optionally show user info -->
         <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
-          Be Happy and Healthy 
+          Be Happy and Healthy
         </div>
         <!-- back button  -->
         <router-link to="/main">
@@ -55,11 +55,13 @@
       <!-- if meal is empty  -->
       <!-- check meal plan is empty or not  -->
       <div v-if="count_temp_foods">
-        <h2 class=" text-yellow-500 text-center w-full 
-         rounded-lg  px-8 py-4 poppins-regular">
-          <i class="bx bx-happy text-4xl mt-3"></i> <br>
+        <h2
+          class="text-yellow-500 text-center w-full rounded-lg px-8 py-4 poppins-regular"
+        >
+          <i class="bx bx-happy text-4xl mt-3"></i> <br />
           <span class="">
-            Create Healthy Meal Sets!! <br> Just click <b>"Get new meal set"</b> button
+            Today meal plan is empty, create new one!! <br />
+            Just click <b>"Get new meal set"</b> button
           </span>
         </h2>
       </div>
@@ -114,6 +116,7 @@
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
 import LoadingPage from "@/components/LoadingPage.vue";
 import ErrorPage from "@/components/ErrorPage.vue";
+import defaultImage from "@/assets/image_not_found.jpg"
 
 export default {
   name: "MealPlanPage",
@@ -129,6 +132,8 @@ export default {
       loading: true,
       error: false,
       count_temp_foods: null,
+      backupSrc: defaultImage,
+      idLoad: true,
     };
   },
 
@@ -137,12 +142,11 @@ export default {
     await this.checkAuthentication();
   },
 
-
   async mounted() {
     // Fetch meals if the user is logged in
     if (this.isLoggedIn) {
       try {
-        await this.getMeals()
+        await this.getMeals();
       } catch (error) {
         this.error = true;
       } finally {
@@ -155,6 +159,9 @@ export default {
 
   methods: {
     // this will work first when page is ready
+    // pictureLoadingError() {
+    //   this.idLoad = false;
+    // },
 
     // this will check authentication method
     async checkAuthentication() {
@@ -196,11 +203,11 @@ export default {
         this.temp_foods = response.data;
         this.temp_foods = this.temp_foods["data"];
         if (Object.keys(this.temp_foods).length === 0) {
-            console.log("count", this.count_temp_foods);
-            this.count_temp_foods = true;
-          } else {
-            this.count_temp_foods = false;
-          }
+          console.log("count", this.count_temp_foods);
+          this.count_temp_foods = true;
+        } else {
+          this.count_temp_foods = false;
+        }
         // Convert object to an array of [key, value] pairs
         this.temp_foods = Object.entries(this.temp_foods);
         // Convert the sliced array back to an object
