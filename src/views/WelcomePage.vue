@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12 flex flex-col items-center justify-center">
+  <div class="col-12 flex flex-col items-center justify-center ">
 
     <div class="flex flex-col items-center justify-center gap-8 md:flex-row">
         <h1 class="text-6xl poppins-semibold mb-4 ms-6 md:ms-0">SarrMal</h1>

@@ -1,5 +1,8 @@
 <template>
-  <div class="container poppins-regular">
+  <div class="container poppins-regular bg-yellow-100" 
+    :class="
+      photo != null ? 'h-auto' : 'h-screen'
+    ">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">

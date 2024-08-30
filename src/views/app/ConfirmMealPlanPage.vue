@@ -1,5 +1,10 @@
 <template>
-  <div class="container h-screen flex flex-col">
+  <div
+    class="container flex flex-col bg-yellow-100"
+    :class="
+      loading || Object.keys(temp_foods).length === 0 ? 'h-screen' : 'h-auto'
+    "
+  >
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -9,9 +14,7 @@
         class="flex w-full items-center justify-between px-2 md:px-4 py-8 mb-24"
       >
         <!-- Optionally show user info -->
-        <div
-          class="poppins-semibold text-slate-700 text-xl md:text-2xl"
-        >
+        <div class="poppins-semibold text-slate-700 text-xl md:text-2xl">
           <p>How do you feel about today?</p>
         </div>
         <!-- back button  -->
@@ -42,49 +45,55 @@
       Your Meal Plans
     </h1>
 
-        <!-- Loading Page -->
+    <!-- Loading Page -->
     <LoadingPage v-if="loading" />
 
     <!-- Error Page -->
     <ErrorPage v-if="error" :message="errorMessage" />
 
     <div v-else>
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
-    >
-      <!-- Loop through temp_foods array to display food items -->
+      <!-- if meal is empty  -->
+
+      <!-- else  -->
       <div
-        v-for="food in temp_foods"
-        :key="food._id"
-        class="flex flex-col items-center p-4 border rounded-md shadow-md bg-white"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
       >
-        <!-- tick button to tick the taken meal  -->
-        <img
-          :src="food.image_url"
-          :alt="food.name"
-          class="w-full h-32 object-cover mb-2 rounded-md"
-        />
-        <div class="flex items-center justify-between w-full">
-          <div class="flex flex-col items-start justify-start">
-            <router-link
-              :to="{
-                name: 'detail',
-                params: {
-                  food_id: food._id,
-                  where: 'fix_food',
-                },
-              }"
+        <!-- Loop through temp_foods array to display food items -->
+        <div
+          v-for="food in temp_foods"
+          :key="food._id"
+          class="flex flex-col items-center p-4 border rounded-md shadow-md bg-white"
+        >
+          <!-- tick button to tick the taken meal  -->
+          <img
+            :src="food.image_url"
+            :alt="food.name"
+            class="w-full h-32 object-cover mb-2 rounded-md"
+          />
+          <div class="flex items-center justify-between w-full">
+            <div class="flex flex-col items-start justify-start">
+              <router-link
+                :to="{
+                  name: 'detail',
+                  params: {
+                    food_id: food._id,
+                    where: 'fix_food',
+                  },
+                }"
+              >
+                <p class="font-semibold text-lg">{{ food.name }}</p>
+              </router-link>
+              <p class="text-gray-600">Calories: {{ food.calories }} g</p>
+            </div>
+            <button
+              @click="tick(food._id)"
+              class="bg-sky-300 text-slate-100 px-2 py-1 rounded-lg"
             >
-            <p class="font-semibold text-lg">{{ food.name }}</p>
-            </router-link>
-            <p class="text-gray-600">Calories: {{ food.calories }} g</p>
-          </div>
-          <button @click="tick(food._id)" class="bg-sky-300 text-slate-100 px-2 py-1 rounded-lg">
-            <i class="bx bx-check"></i>
+              <i class="bx bx-check"></i>
             </button>
+          </div>
         </div>
       </div>
-    </div>
     </div>
     <!-- end of food recommendation section  -->
   </div>

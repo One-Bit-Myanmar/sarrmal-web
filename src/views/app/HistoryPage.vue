@@ -1,5 +1,8 @@
 <template>
-  <div class="container h-screen flex flex-col">
+  <div class="container flex flex-col bg-yellow-100"
+  :class="
+      loading || Object.keys(temp_foods).length === 0 ? 'h-screen' : 'h-auto'
+    ">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">

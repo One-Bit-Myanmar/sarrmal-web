@@ -1,5 +1,5 @@
 <template>
-  <div style="height: auto !important; padding: 1rem !important">
+  <div style="" class="h-screen overflow-y-scroll">
     <div class="p-6 bg-light rounded-lg shadow poppins-regular">
       <h1 class="mb-8 text-xl poppins-semibold text-sky-700">Register</h1>
       <form
@@ -49,7 +49,7 @@
           </div>
 
           <div class="flex items-center justify-between w-full gap-4">
-            <router-link to="/">
+            <router-link to="/register">
               <div
                 class="w-full px-8 py-4 bg-slate-200 text-sky-700 poppins-regular rounded-lg"
               >
@@ -145,8 +145,14 @@
                 <label for="diseases" class="text-lg font-regular"
                   >Disease:</label
                 >
-                <ul class="grid w-full gap-3">
-                  <li v-for="disease in diseaseOptions" :key="disease.value">
+                <ul
+                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
+                >
+                  <li
+                    v-for="disease in diseaseOptions"
+                    :key="disease.value"
+                    class="col-span-1"
+                  >
                     <input
                       type="checkbox"
                       :id="disease.value"
@@ -169,22 +175,36 @@
               </div>
 
               <div class="flex flex-col gap-2 w-full">
-                <label for="allergies" class="text-lg font-regular"
-                  >Allergies:</label
+                <label for="diseases" class="text-lg font-regular"
+                  >Disease:</label
                 >
-                <select
-                  id="allergies"
-                  v-model="allergies"
-                  required
-                  class="p-3 w-full border shadow rounded-md"
+                <ul
+                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
                 >
-                  <option value="">Choose</option>
-                  <option value="diabetes">Peanuts</option>
-                  <option value="hypertension">Shellfish</option>
-                  <option value="celiac disease">Eggs</option>
-                  <option value="food allergies">Milk</option>
-                  <option value="food allergies">None</option>
-                </select>
+                  <li
+                    v-for="allergie in allergiesOptions"
+                    :key="allergie.value"
+                    class="col-span-1"
+                  >
+                    <input
+                      type="checkbox"
+                      :id="allergie.value"
+                      :value="allergie.value"
+                      v-model="allergies"
+                      class="hidden peer"
+                    />
+                    <label
+                      :for="allergie.value"
+                      class="inline-flex items-center justify-between w-auto px-2 py-2 text-slate-700 bg-white border-2 rounded-lg cursor-pointer border-gray-300 peer-checked:border-blue-600 peer-checked:text-sky-700 hover:bg-sky-100"
+                    >
+                      <div class="block">
+                        <div class="w-auto font-semibold">
+                          {{ allergie.label }}
+                        </div>
+                      </div>
+                    </label>
+                  </li>
+                </ul>
               </div>
 
               <div class="flex flex-col gap-2 w-full">
@@ -197,6 +217,7 @@
                   required
                   class="p-3 w-full border shadow rounded-md"
                 >
+                  <option value="" selected>Choose</option>
                   <option value="low">Low</option>
                   <option value="moderate">Moderate</option>
                   <option value="high">High</option>
@@ -240,7 +261,6 @@
 
 <script>
 import axiosInstance from "@/axios"; // Adjust the import path as needed
-import Tagify from "@yaireo/tagify";
 
 export default {
   // data
@@ -265,9 +285,31 @@ export default {
         { value: "hypertension", label: "Hypertension" },
         { value: "celiac", label: "Celiac Disease" },
         { value: "allergies", label: "Food Allergies" },
+        { value: "other", label: "Others" },
+        { value: "none", label: "None" },
+      ],
+      allergiesOptions: [
+        { value: "peanuts", label: "Peanuts" },
+        { value: "tree_nuts", label: "Tree Nuts" },
+        { value: "milk", label: "Milk" },
+        { value: "eggs", label: "Eggs" },
+        { value: "fish", label: "Fish" },
+        { value: "shellfish", label: "Shellfish" },
+        { value: "soy", label: "Soy" },
+        { value: "wheat", label: "Wheat" },
+        { value: "others", label: "Others" },
         { value: "none", label: "None" },
       ],
     };
+  },
+
+  watch: {
+    diseases(newValues) {
+      console.log("Selected diseases:", newValues);
+    },
+    allergies(newValues) {
+      console.log("Selected diseases:", newValues);
+    },
   },
 
   computed: {
@@ -280,19 +322,6 @@ export default {
         this.password === this.confirm_password
       );
     },
-  },
-
-  mounted() {
-    var input = document.getElementById("onlyMarvel");
-    console.log(input);
-    var tagify = new Tagify(input, {
-      whitelist: this.mcuHeros,
-      //  whitelist: ["ironman", "antman", "captain america", "thor", "spiderman"],
-      enforceWhitelist: true,
-    });
-    tagify.on("add", function (e) {
-      console.log(e.detail.data);
-    });
   },
 
   methods: {
@@ -325,14 +354,6 @@ export default {
         return;
       }
 
-      // Convert comma-separated values to arrays
-      const diseasesArray = this.diseases
-        .split(",")
-        .map((disease) => disease.trim());
-      const allergiesArray = this.allergies
-        .split(",")
-        .map((allergy) => allergy.trim());
-
       try {
         // Register new user
         const response = await axiosInstance.post("user/register", {
@@ -342,8 +363,8 @@ export default {
           gender: parseInt(this.gender),
           weight: parseFloat(this.weight),
           height: parseFloat(this.height),
-          diseases: diseasesArray,
-          allergies: allergiesArray,
+          diseases: this.diseases,
+          allergies: this.allergies,
           exercises: this.exercise,
           disabled: false,
           age: parseInt(this.age),

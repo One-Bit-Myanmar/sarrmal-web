@@ -73,7 +73,7 @@
             />
           </div>
 
-          <!-- Email -->
+          <!-- age -->
           <div
             class="flex flex-col items-start text-start w-full justify-center mb-3"
           >
@@ -117,7 +117,7 @@
             class="flex flex-col items-start text-start w-full justify-center mb-3"
           >
             <p class="text-sky-700">Diseases</p>
-            <ul class="text-slate-700 w-full">
+            <ul class="text-slate-700 flex items-start gap-3">
               <li
                 v-for="(disease, index) in user.diseases"
                 :key="index"
@@ -128,13 +128,12 @@
             </ul>
           </div>
 
-          
           <!-- Allergies -->
           <div
             class="flex flex-col items-start text-start w-full justify-center mb-3"
           >
             <p class="text-sky-700">Allergies</p>
-            <ul class="text-slate-700 w-full">
+            <ul class="text-slate-700 flex items-start gap-3">
               <li
                 v-for="(allergie, index) in user.allergies"
                 :key="index"
@@ -172,6 +171,7 @@
             </select>
           </div>
         </form>
+
         <!-- Button Group -->
         <div class="flex items-center justify-center gap-6">
           <button
@@ -338,6 +338,44 @@ export default {
         console.error("Failed to update profile:", error);
         alert("Failed to update profile");
       }
+    },
+
+    // logout method
+    logout() {
+      // Check if there is a token in localStorage
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        // Handle the case where there is no token
+        console.error("No authentication token found.");
+        this.$router.push("/login");
+        return;
+      }
+      // Assuming you have a logout endpoint on your server
+      axiosInstance
+        .put(
+          "user/logout",
+          {},
+          {
+            // Empty body since it's a logout request
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then(() => {
+          // Remove token and update UI
+          localStorage.removeItem("authToken");
+          this.isLoggedIn = false;
+          this.user = null;
+          // Redirect to login page
+          this.$router.push("/login");
+        })
+        .catch((error) => {
+          console.error("Failed to logout:", error);
+          // Optionally handle logout errors here
+          this.$router.push("/login"); // Redirect even if there is an error
+        });
     },
   },
 };

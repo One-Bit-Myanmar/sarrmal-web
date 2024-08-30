@@ -1,5 +1,7 @@
 <template>
-  <div class="container h-screen flex flex-col">
+  <div class="container flex flex-col bg-yellow-100" :class="
+    loading ? 'h-screen' : 'h-auto'
+  ">
     <!-- Error Message Box -->
     <div
       v-if="showError"

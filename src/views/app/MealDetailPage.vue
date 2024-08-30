@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container bg-yellow-100"
+  :class="
+    loading ? 'h-screen' : 'h-auto'
+  ">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -31,7 +34,7 @@
     <ErrorPage v-if="error" :message="errorMessage" />
 
     <div
-      class="flex flex-col items-center justify-center w-3/2"
+      class="flex flex-col items-center justify-center w-3/2 bg-white p-4 py-8 shadow rounded-lg"
       v-if="food_info"
     >
       <!-- Food Image -->
@@ -41,7 +44,7 @@
         class="w-1/2 md:w-26 h-auto rounded-lg mb-5"
       />
 
-      <h3 class="text-slate-700 poppins-semibold mb-3 text-2xl">
+      <h3 class="text-slate-700 poppins-semibold mb-10 text-2xl">
         {{ food_info.name }}
       </h3>
 

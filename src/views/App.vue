@@ -1,7 +1,5 @@
 <template>
-  <div
-    :class="containerClass"
-  >
+  <div :class="containerClass">
     <!-- application header  -->
     <!-- <div class="header">
       <h2>Welcome to Sarrmal</h2>
@@ -24,26 +22,25 @@ export default {
     };
   },
 
-
   created() {
     // Check if the user is logged in when the component is created
     this.checkAuthentication();
   },
 
   computed: {
-      containerClass() {
-        const route = this.$route.path;
-        let classes = "flex justify-center bg-slate-50 p-5";
+    containerClass() {
+      const route = this.$route.path;
+      let classes = "flex justify-center bg-yellow-100 p-5";
 
-        if (route === '/' || route === '/login' || route === '/register') {
-          classes += " items-center h-screen"; // Center align with 100vh
-        } else {
-          classes += " items-start h-auto"; // Start align with custom height
-        }
+      if (route === "/" || route === "/login" || route === "/register") {
+        classes += " items-center h-screen bg-yellow-100"; // Center align with 100vh
+      } else {
+        classes += " items-start h-auto bg-yellow-100"; // Start align with custom height
+      }
 
-        return classes;
-      },
+      return classes;
     },
+  },
 
   methods: {
     async checkAuthentication() {

@@ -1,5 +1,8 @@
 <template>
-  <div class="container h-screen flex flex-col">
+  <div class="container flex flex-col bg-yellow-100"
+  :class="
+    loading ? 'h-screen' : 'h-auto'
+  ">
     <!-- header -->
     <div class="header">
       <h1 class="bg-slate-200 p-3 rounded-lg poppins-regular">
@@ -123,7 +126,7 @@
         <div
           v-for="food in temp_foods"
           :key="food._id"
-          class="flex flex-col items-center p-4 border rounded-md shadow-md"
+          class="flex flex-col bg-slate-50 items-center p-4 border rounded-md shadow-md"
         >
           <img
             :src="food.image_url"
