@@ -2,12 +2,13 @@
   <div class="col-12 flex flex-col items-center justify-center">
     <div class="flex flex-col items-center justify-center gap-8 md:flex-row">
       <h1 class="text-6xl poppins-semibold mb-4 ms-6 md:ms-0">
-        SarrMal <br> <span class="text-3xl">(The Nutritionist)</span>
+        SarrMal <br />
+        <span class="text-3xl">(The Nutritionist)</span>
       </h1>
       <img :src="logo" alt="" class="w-64 md:w-56 me-6 md:me-0 mb-2" />
     </div>
     <p class="text-2xl poppins-regular text-slate-700 text-center px-6">
-      AI Food Recommendation and calories analyzer for <b>diabetes </b>
+      AI Food Recommendation for <b>Diabetes </b>
     </p>
 
     <div v-if="!isLoggedIn" class="before-login-and-register mt-10">
