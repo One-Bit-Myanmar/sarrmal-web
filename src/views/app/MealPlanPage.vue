@@ -136,7 +136,7 @@
         <div
           v-for="food in temp_foods"
           :key="food._id"
-          class="flex flex-col items-center p-4 border rounded-md shadow-md bg-white"
+          class="flex flex-col items-center poppins-regular p-4 border rounded-md shadow-md bg-white"
         >
           <img
             :src="food.image_url"
@@ -152,7 +152,7 @@
                 },
               }"
             >
-          <p class="font-semibold text-lg">{{ food.name }}</p>
+          <p class="font-semibold text-lg text-center text-sky-700">{{ food.name }}</p>
           </router-link>
           <p class="text-gray-600">Calories: {{ food.calories }} g</p>
         </div>

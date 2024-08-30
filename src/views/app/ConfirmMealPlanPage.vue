@@ -56,7 +56,7 @@
 
       <!-- else  -->
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
+        class="grid grid-cols-1 poppins-regular sm:grid-cols-2 md:grid-cols-2 gap-4 p-3 md:p-10"
       >
         <!-- Loop through temp_foods array to display food items -->
         <div
@@ -81,7 +81,7 @@
                   },
                 }"
               >
-                <p class="font-semibold text-lg">{{ food.name }}</p>
+                <p class="font-semibold text-lg text-center text-sky-700">{{ food.name }}</p>
               </router-link>
               <p class="text-gray-600">Calories: {{ food.calories }} g</p>
             </div>

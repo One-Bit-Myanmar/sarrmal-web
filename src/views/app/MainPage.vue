@@ -121,7 +121,7 @@
     <ErrorPage v-if="error" :message="errorMessage" />
 
     <div v-else>
-      <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
+      <div class="grid grid-cols-2 gap-4 p-3 md:p-10 poppins-regular">
         <!-- Loop through temp_foods array to display food items -->
         <div
           v-for="food in temp_foods"
@@ -142,7 +142,7 @@
                 },
               }"
             >
-          <p class="font-semibold">{{ food.name }}</p>
+          <p class="font-semibold text-sky-700 text-center">{{ food.name }}</p>
           </router-link>
           <p>Calories: {{ food.calories }} g</p>
         </div>

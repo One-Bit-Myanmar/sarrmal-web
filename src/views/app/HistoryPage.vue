@@ -35,7 +35,7 @@
     <ErrorPage v-if="error" :message="errorMessage" />
 
     <div v-else>
-      <div v-for="(foods, date) in groupedData" :key="date" class="mb-8">
+      <div v-for="(foods, date) in groupedData" :key="date" class="mb-8 poppins-regular">
         <h2 class="text-lg font-semibold mb-2">{{ date }}</h2>
         <div class="grid grid-cols-2 gap-4 p-3 md:p-10">
           <div
@@ -57,7 +57,7 @@
                 },
               }"
             >
-              <p class="font-semibold">{{ food.foodDetails.data.name }}</p>
+              <p class="font-semibold text-center">{{ food.foodDetails.data.name }}</p>
             </router-link>
             <p>Calories: {{ food.foodDetails.data.calories }} g</p>
             <!-- Add other food details as needed -->
