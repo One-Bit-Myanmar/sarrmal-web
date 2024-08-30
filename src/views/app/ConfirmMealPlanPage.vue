@@ -2,7 +2,7 @@
   <div
     class="container flex flex-col bg-yellow-100"
     :class="
-      loading || Object.keys(temp_foods).length === 0 ? 'h-screen' : 'h-auto'
+      loading || Object.keys(temp_foods).length === 0 ? 'h-auto' : 'h-auto'
     "
   >
     <!-- header -->
@@ -102,7 +102,12 @@
               @click="tick(food._id)"
               class="bg-sky-300 text-slate-100 px-2 py-1 rounded-lg"
             >
-              <i class="bx bx-check"></i>
+              <div v-if="isticking">
+<i class="bx bx-loader-alt animate-spin mr-2"></i>
+              </div>
+              <div v-else>
+                <i class="bx bx-check"></i>
+              </div>
             </button>
           </div>
         </div>
@@ -116,7 +121,7 @@
 import axiosInstance from "@/axios"; // Adjust the import based on your project setup
 import LoadingPage from "@/components/LoadingPage.vue";
 import ErrorPage from "@/components/ErrorPage.vue";
-import defaultImage from "@/assets/image_not_found.jpg"
+import defaultImage from "@/assets/image_not_found.jpg";
 
 export default {
   name: "MealPlanPage",
@@ -134,6 +139,7 @@ export default {
       count_temp_foods: null,
       backupSrc: defaultImage,
       idLoad: true,
+      isticking: false,
     };
   },
 
@@ -271,7 +277,7 @@ export default {
     // Define tickFood as an async method
     async tick(food_id) {
       const token = localStorage.getItem("authToken");
-
+      this.isticking = true;
       try {
         // Replace `{}` with the actual food_id in the URL
         const response = await axiosInstance.put(
@@ -283,7 +289,7 @@ export default {
             },
           }
         );
-
+          
         if (response.status === 200) {
           // Emit events on success
           this.$emit("tick_food", food_id);

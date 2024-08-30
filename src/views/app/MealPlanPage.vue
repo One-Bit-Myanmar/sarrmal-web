@@ -1,7 +1,7 @@
 <template>
   <div
     class="container flex flex-col bg-yellow-100"
-    :class="loading ? 'h-screen' : 'h-auto'"
+    :class="loading ? 'h-auto py-8' : 'h-auto'"
   >
     <!-- Error Message Box -->
     <div
@@ -141,7 +141,7 @@
     <LoadingPage v-if="loading" />
 
     <!-- Error Page -->
-    <ErrorPage v-if="error" :message="errorMessage" />
+    <ErrorPage v-if="error" :errorMessage="errorMessage" />
 
     <div v-if="!loading">
       <div
@@ -342,7 +342,7 @@ export default {
     // refresh or regenerate the page
     async refreshPage() {
       // Check if both dropdowns have values selected
-      if (!this.preferredFood || !this.foodType) {
+      if (!this.preferredFood || !this.foodType || this.sugarLevel < 0) {
         this.showErrorMessage(
           "Please choose both preferred food and food type."
         );
@@ -361,7 +361,7 @@ export default {
               params: {
                 preferred_food: this.preferredFood,
                 food_type: this.foodType,
-                sugar_level: parseInt(this.sugarLevel)
+                sugar_level: parseInt(this.sugarLevel),
               },
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -374,6 +374,7 @@ export default {
           this.isgenerating = false;
           this.loading = false;
         } catch (error) {
+          this.errorMessage = error.detail;
           this.HandleError(error);
           this.isgenerating = false;
           this.loading = false;
